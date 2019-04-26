@@ -2,5 +2,7 @@
 
 int main()
 {
+    BLinkTree<int> tree;
+
     return 0;
 }

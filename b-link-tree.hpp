@@ -1,5 +1,3 @@
-#include <limits>
-
 #define K 5
 
 template<class T>
@@ -10,24 +8,16 @@ struct Node
     Node *children[K + 1];
     T values[K];
     
-    Node()
-    {
-        children_number = 0;
-        parent = nullptr;
-        for (int i = 0; i < K; ++i)
-        {
-            values[i] = std::numeric_limits<T>::max();
-            children[i] = nullptr;
-        }
-    }
+    Node();
 };
 
 
 template <class T>
-class B_link_tree
+class BLinkTree
 {
     Node<T> * root;
 public:   
-    B_link_tree();
+    BLinkTree();
     void insert(T value);
+    void remove(T value);
 };
