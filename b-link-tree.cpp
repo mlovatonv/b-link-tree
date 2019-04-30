@@ -7,6 +7,7 @@
 template<class T>
 Node<T>::Node()    
 {
+    is_leaf = true;
     children_number = 0;
     parent = nullptr;
     for (int i = 0; i < K; ++i)

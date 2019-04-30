@@ -3,6 +3,7 @@
 template<class T>
 struct Node 
 {
+    bool is_leaf;
     int children_number;
     Node *parent;
     Node *children[K + 1];
