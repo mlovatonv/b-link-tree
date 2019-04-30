@@ -9,6 +9,7 @@ struct Node
     T values[K];
     
     Node();
+    void print();
 };
 
 
@@ -20,4 +21,5 @@ public:
     BLinkTree();
     void insert(T value);
     void remove(T value);
+    void print();
 };

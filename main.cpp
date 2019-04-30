@@ -3,6 +3,6 @@
 int main()
 {
     BLinkTree<int> tree;
-
+    tree.print();
     return 0;
 }
