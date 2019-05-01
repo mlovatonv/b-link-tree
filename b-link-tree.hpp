@@ -1,20 +1,6 @@
+#include "b-link-node.hpp"
+
 #define K 5
-#define LEAF true
-#define NOT_LEAF false
-
-template<class T>
-struct Node 
-{
-    bool is_leaf;
-    int children_number;
-    T values[K];
-    Node * parent;
-    Node * children[K + 1];
-    
-    Node(bool _is_leaf);
-    void print();
-};
-
 
 template <class T>
 class BLinkTree
@@ -24,5 +10,21 @@ public:
     BLinkTree();
     void insert(T value);
     void remove(T value);
-    void print();
+    void print() 
+    {
+        std::stack<Node<T>*> node_stack;
+        Node<T> * top_node;
+        node_stack.push(this->root);
+        while (!node_stack.empty())
+        {
+            top_node = node_stack.top();
+            node_stack.pop();
+
+            top_node->print();
+            for (int i = 0; i < top_node->children_number; ++i)
+            {
+                node_stack.push(top_node->children[i]);
+            }
+        }
+    };
 };
