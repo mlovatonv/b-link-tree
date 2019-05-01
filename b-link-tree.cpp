@@ -51,3 +51,21 @@ void BLinkTree<T>::print()
         }
     }
 };
+
+template<class T>
+void BLinkTree<T>::insert(T value)
+{
+    
+    Node *aux=new Node()
+    if(root->children[0]==nullptr && root->values[0]==std::numeric_limits<T>::max()){
+        root->values[0]=value;
+    }
+    else{
+        int i=0;
+        while(value<= root->children[i]){
+            ++i;
+        }
+        root->values[i]
+    }
+
+}
