@@ -69,7 +69,7 @@ public:
                 }
             }
         }
-        
+        ++tuple_number;
     };
 
     void print()
