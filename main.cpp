@@ -3,12 +3,12 @@
 
 int main()
 {
-    BLinkNode<int> tree;
-    tree.insert(5);
-    tree.insert(4);
-    tree.insert(3);
-    tree.insert(1);
-    tree.Print();
+    BLinkNode<int> node;
+    node.insert(5);
+    node.insert(7);
+    node.insert(1);
+    node.insert(10);
+    node.Print();
     //tree.print();
     return 0;
 }
