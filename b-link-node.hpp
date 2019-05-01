@@ -1,12 +1,12 @@
 #include <iostream>
 template<class T>
-class ValuesN{
-public:
+struct NodeTuple
+{
     T value;
-    ValuesN<T>* next;
-    ValuesN<T>* AbajoIzq;
+    NodeTuple<T>* next;
+    NodeTuple<T>* AbajoIzq;
 
-    ValuesN(T value){
+    NodeTuple(T value){
         next=nullptr;
         AbajoIzq=nullptr;
         this->value=value;
@@ -18,8 +18,7 @@ class BLinkNode
 {
     int n;
     BLinkNode<T> * right;
-    ValuesN<T> * start;
-
+    NodeTuple<T> * start;
 public:
     BLinkNode(){
         this->start=nullptr;
@@ -27,13 +26,13 @@ public:
     };
 
     void insert(T value){
-        ValuesN<T> *aux_ins= new ValuesN<T>(value);
+        NodeTuple<T> *aux_ins= new NodeTuple<T>(value);
         if(start==nullptr){
             this->start=aux_ins;
         } 
         
         else{
-            ValuesN<T>* aux= start;
+            NodeTuple<T>* aux= start;
             if(value < start->value){
                 start=aux_ins;
                 aux_ins->next=aux;
@@ -43,7 +42,7 @@ public:
                     aux=aux->next;
                 }
                 if(aux->next!=nullptr){
-                    ValuesN<T>* aux2;
+                    NodeTuple<T>* aux2;
                     aux2=aux->next;
                     aux->next=aux_ins;
                     aux_ins->next=aux2;
@@ -57,7 +56,7 @@ public:
         
     };
     void Print(){
-        ValuesN<T>* aux= start;
+        NodeTuple<T>* aux= start;
         while(aux!=nullptr){
             std::cout<<aux->value<<"\n";
             aux=aux->next;
