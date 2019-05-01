@@ -1,8 +1,9 @@
-#include "b-link-tree.cpp"
+//#include "b-link-tree.hpp"
+#include "b-link-node.hpp"
 
 int main()
 {
-    BLinkTree<int> tree;
-    tree.print();
+    BLinkNode<int> tree;
+    //tree.print();
     return 0;
 }
