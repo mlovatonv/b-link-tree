@@ -5,8 +5,9 @@
 #include "b-link-tree.hpp"
 
 template<class T>
-Node<T>::Node()    
+Node<T>::Node(bool _is_leaf)    
 {
+    is_leaf = _is_leaf;
     children_number = 0;
     parent = nullptr;
     for (int i = 0; i < K; ++i)
@@ -30,7 +31,13 @@ void Node<T>::print()
 template<class T>
 BLinkTree<T>::BLinkTree() 
 {
-    this->root = new Node<T>();
+    this->root = new Node<T>(LEAF);
+};
+
+template<class T>
+void BLinkTree<T>::insert(T value) 
+{
+    this->root
 };
 
 template<class T>

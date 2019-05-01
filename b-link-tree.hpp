@@ -1,14 +1,17 @@
 #define K 5
+#define LEAF true
+#define NOT_LEAF false
 
 template<class T>
 struct Node 
 {
+    bool is_leaf;
     int children_number;
-    Node *parent;
-    Node *children[K + 1];
     T values[K];
+    Node * parent;
+    Node * children[K + 1];
     
-    Node();
+    Node(bool _is_leaf);
     void print();
 };
 
