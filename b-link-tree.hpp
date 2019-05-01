@@ -5,15 +5,21 @@
 template <class T>
 class BLinkTree
 {
-    Node<T> * root;
+    BLinkNode<T> * root;
 public:   
-    BLinkTree();
+    BLinkTree()
+    {
+        this->root = new BLinkNode<T>;
+    };
+    
     void insert(T value);
+    
     void remove(T value);
+    
     void print() 
     {
-        std::stack<Node<T>*> node_stack;
-        Node<T> * top_node;
+        std::stack<BLinkNode<T>*> node_stack;
+        BLinkNode<T> * top_node;
         node_stack.push(this->root);
         while (!node_stack.empty())
         {
