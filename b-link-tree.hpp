@@ -5,7 +5,7 @@
 template <class KeyType, class DataType>
 class BLinkTree
 {
-    BLinkNode<KeyType> * root;
+    BLinkNode<KeyType> *root;
 public:   
     BLinkTree()
     {
@@ -19,7 +19,7 @@ public:
     void print() 
     {
         std::stack<BLinkNode<KeyType>*> node_stack;
-        BLinkNode<KeyType> * top_node;
+        BLinkNode<KeyType> *top_node;
         node_stack.push(this->root);
         while (!node_stack.empty())
         {

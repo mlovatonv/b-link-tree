@@ -1,4 +1,8 @@
 #include <iostream>
+
+#define LEAF true
+#define NON_LEAF false
+
 template <class T>
 struct NodeTuple
 {
@@ -16,14 +20,18 @@ struct NodeTuple
 template <class T>
 class BLinkNode
 {
-    int n;
     BLinkNode<T> *right;
     NodeTuple<T> *start;
 public:
-    BLinkNode()
+    bool m;
+    int tuple_number;
+
+    BLinkNode(bool is_leaf)
     {
+        this->m = is_leaf;
+        this->tuple_number = 0;
+        this->right = nullptr;
         this->start = nullptr;
-        n=0;
     };
 
     void insert(T value)
@@ -33,15 +41,16 @@ public:
         {
             this->start = aux_ins;
         } 
-        
-        else{
+        else
+        {
             NodeTuple<T> *aux = start;
             if (value < start->value)
             {
                 start = aux_ins;
                 aux_ins->next = aux;
             }
-            else{
+            else
+            {
                 while (aux->next != nullptr && aux->next->value < value)
                 {
                     aux = aux->next;
