@@ -7,9 +7,7 @@ public:
     ValuesN<T>* AbajoIzq;
 
     ValuesN(T value){
-        std::cout<<value<<"\n";
         next=nullptr;
-        AbajoDer=nullptr;
         AbajoIzq=nullptr;
         this->value=value;
     };
@@ -36,18 +34,24 @@ public:
         
         else{
             ValuesN<T>* aux= start;
-            while(aux->next != nullptr && aux->next->value<value){
-                aux=aux->next;
-            }
-            if(aux->next!=nullptr){
-                ValuesN<T>* aux2;
-                aux2=aux->next;
-                aux->next=aux_ins;
-                aux_ins->next=aux2;
+            if(value < start->value){
+                start=aux_ins;
+                aux_ins->next=aux;
             }
             else{
-                aux->next=aux_ins;
-                aux_ins->next=nullptr;
+                while(aux->next != nullptr && aux->next->value<value){
+                    aux=aux->next;
+                }
+                if(aux->next!=nullptr){
+                    ValuesN<T>* aux2;
+                    aux2=aux->next;
+                    aux->next=aux_ins;
+                    aux_ins->next=aux2;
+                }
+                else{
+                    aux->next=aux_ins;
+                    aux_ins->next=nullptr;
+                }
             }
         }
         
