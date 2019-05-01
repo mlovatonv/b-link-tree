@@ -2,24 +2,24 @@
 
 #define K 5
 
-template <class T>
+template <class KeyType, class DataType>
 class BLinkTree
 {
-    BLinkNode<T> * root;
+    BLinkNode<KeyType> * root;
 public:   
     BLinkTree()
     {
-        this->root = new BLinkNode<T>;
+        this->root = new BLinkNode<KeyType>;
     };
     
-    void insert(T value);
+    void insert(KeyType key, DataType data);
     
-    void remove(T value);
+    void remove(KeyType key);
     
     void print() 
     {
-        std::stack<BLinkNode<T>*> node_stack;
-        BLinkNode<T> * top_node;
+        std::stack<BLinkNode<KeyType>*> node_stack;
+        BLinkNode<KeyType> * top_node;
         node_stack.push(this->root);
         while (!node_stack.empty())
         {
