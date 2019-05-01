@@ -5,7 +5,6 @@ public:
     T value;
     ValuesN<T>* next;
     ValuesN<T>* AbajoIzq;
-    ValuesN<T>* AbajoDer;
 
     ValuesN(T value){
         std::cout<<value<<"\n";
@@ -20,7 +19,8 @@ template <class T>
 class BLinkNode
 {
     int n;
-    ValuesN<T> *start;
+    BLinkNode<T> * right;
+    ValuesN<T> * start;
 
 public:
     BLinkNode(){
