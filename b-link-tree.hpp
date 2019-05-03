@@ -23,15 +23,16 @@ public:
 
     void split_leaf(BLinkNode<KeyType, DataType> *original_node)
     {
-        NodeTuple<KeyType, DataType> *middle_tuple = original_node->divide();
+        NodeTuple<KeyType, DataType> *middle_tuple = original_node->get_middle_tuple();
         BLinkNode<KeyType, DataType> *parent_node = new BLinkNode<KeyType, DataType>(NON_LEAF);
         parent_node->insert(middle_tuple->value);
         parent_node->insert(middle_tuple->get_last()->value);
         parent_node->start->left_node = original_node;
 
         original_node->next_node = new BLinkNode<KeyType, DataType>(LEAF);
-        original_node->next_node->start = middle_tuple;
         parent_node->start->next->left_node = original_node->next_node;
+        original_node->next_node->start = middle_tuple->next;
+        middle_tuple->next = nullptr;
 
         int initial_entries = original_node->entries;
         original_node->entries = initial_entries / 2;

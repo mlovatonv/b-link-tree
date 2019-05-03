@@ -89,16 +89,15 @@ struct BLinkNode
         return aux->left_node;
     }
 
-    NodeTuple<KeyType, DataType>* divide()
+    NodeTuple<KeyType, DataType>* get_middle_tuple()
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
         for (int i = 0; i < (this->entries / 2) - 1; ++i)
         {
             aux = aux->next;
         }
-        NodeTuple<KeyType, DataType> *middle_node = aux->next;
-        aux->next = nullptr;
-        return middle_node;
+        NodeTuple<KeyType, DataType> *middle_tuple = aux;
+        return middle_tuple;
     };
 
     NodeTuple<KeyType, DataType>* get_tuple(KeyType value)
