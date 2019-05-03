@@ -13,18 +13,29 @@ public:
     void insert(KeyType key, DataType data) 
     {
         BLinkNode<KeyType, DataType> *aux_node = root;
-        NodeTuple<KeyType, DataType> *aux_tuple;
-        // while (!aux_node->is_leaf)
-        // {
-        //     while (aux_tuple )
-        // }
+        while (!aux_node->is_leaf)
+        {
+            aux_node = aux_node->search(key);
+        }
+        aux_node->insert(key, data);
     };
-    
-    void remove(KeyType key);
-    
-    void print() 
+
+    void split_leaf()
     {};
 
-    void print(BLinkNode<KeyType, DataType> *node)
+    void split_non_leaf()
     {};
+    
+    void remove(KeyType key)
+    {};
+    
+    void print() 
+    {
+        this->print(this->root);
+    };
+
+    void print(BLinkNode<KeyType, DataType> *node)
+    {
+        
+    };
 };
