@@ -82,22 +82,25 @@ struct BLinkNode
         std::cout << "}";
         std::cout<<"\n";
     };
-    NodeTuple<KeyType, DataType>* desconectar_tupla(KeyType value){
-        auto aux1=this->start;
-        auto aux2=this->start->next;
-        while(aux2->value<value){
-            aux1=aux1->next;
-            aux2=aux2->next;
+
+    NodeTuple<KeyType, DataType>* divide()
+    {
+        NodeTuple<KeyType, DataType> *aux = this->start;
+        for (int i = 0; i < (this->entries) / 2; ++i)
+        {
+            aux = aux->next;
         }
-        aux1->next=aux2->next;
-        return aux2;
-    }
-    NodeTuple<KeyType, DataType>* node_tuple(KeyType value){
-        auto aux1=this->start;
-        while(aux1->value<value){
-            aux1=aux1->next;
+        return aux;
+    };
+
+    NodeTuple<KeyType, DataType>* get_tuple(KeyType value)
+    {
+        NodeTuple<KeyType, DataType> *aux = this->start;
+        while (aux != nullptr && aux->value != value)
+        {
+            aux = aux->next;
         }
-        return aux1;
-    }
+        return aux;
+    };
 
 };
