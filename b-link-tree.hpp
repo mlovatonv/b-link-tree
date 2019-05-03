@@ -25,12 +25,14 @@ public:
     {
         NodeTuple<KeyType, DataType> *middle_tuple = original_node->get_middle_tuple();
         BLinkNode<KeyType, DataType> *parent_node = new BLinkNode<KeyType, DataType>(NON_LEAF);
-        parent_node->insert(middle_tuple->value);
-        parent_node->insert(middle_tuple->get_last()->value);
-        parent_node->start->left_node = original_node;
+        BLinkNode<KeyType, DataType> *next_node = new BLinkNode<KeyType, DataType>(NON_LEAF);
 
-        original_node->next_node = new BLinkNode<KeyType, DataType>(LEAF);
-        parent_node->start->next->left_node = original_node->next_node;
+        parent_node->insert(middle_tuple->value);
+        parent_node->start->left_node = original_node;
+        parent_node->insert(middle_tuple->get_last()->value);
+        parent_node->start->next->left_node = next_node;
+
+        original_node->next_node = next_node;
         original_node->next_node->start = middle_tuple->next;
         middle_tuple->next = nullptr;
 
