@@ -23,6 +23,5 @@ int main()
     tree.insert(20, 7);
     tree.insert(3, 8);
     tree.print();
-
     return 0;
 }
