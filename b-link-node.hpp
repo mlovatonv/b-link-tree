@@ -27,6 +27,16 @@ struct NodeTuple
         this->data_node->start = new NodeTuple<DataType, DataType>(data);
         this->next = nullptr;
     };
+
+    NodeTuple<KeyType, DataType>* get_last()
+    {
+        NodeTuple<KeyType, DataType> *aux = this;
+        while (aux != nullptr && aux->next != nullptr)
+        {
+            aux = aux->next;
+        }
+        return aux;
+    };
 };
 
 template <class KeyType, class DataType>
@@ -86,11 +96,14 @@ struct BLinkNode
     NodeTuple<KeyType, DataType>* divide()
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
-        for (int i = 0; i < (this->entries) / 2; ++i)
+        this->entries = (this->entries) / 2;
+        for (int i = 0; i < this->entries; ++i)
         {
             aux = aux->next;
         }
-        return aux;
+        NodeTuple<KeyType, DataType> *middle_node = aux->next;
+        aux->next = nullptr;
+        return middle_node;
     };
 
     NodeTuple<KeyType, DataType>* get_tuple(KeyType value)
@@ -103,4 +116,13 @@ struct BLinkNode
         return aux;
     };
 
+    DataType get_data(KeyType value)
+    {
+        NodeTuple<KeyType, DataType> *aux = this->start;
+        while (aux != nullptr && aux->value != value)
+        {
+            aux = aux->next;
+        }
+        return aux->data_node->start->value;
+    }
 };
