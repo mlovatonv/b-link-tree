@@ -63,11 +63,12 @@ struct BLinkNode
     void print()
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
+        std::cout << "{ ";
         while (aux != nullptr)
         {
             std::cout << aux->value << " ";
             aux = aux->next;
         }
-        std::cout << "(" << this->entries << " entries)\n";
+        std::cout << "}";
     };
 };
