@@ -21,9 +21,10 @@ int main()
     tree.insert(0, 5);
     tree.insert(2, 6);
     tree.insert(20, 7);
-    tree.insert(3, 8);
+    // tree.insert(3, 8);
     tree.print();
-    tree.split_non_leaf();
+
+    tree.split_leaf(tree.root);
     tree.print();
     return 0;
 }

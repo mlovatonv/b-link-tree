@@ -55,9 +55,8 @@ struct BLinkNode
         this->entries = 0;
     };
 
-    void insert(KeyType key, DataType data) 
+    void insert(NodeTuple<KeyType, DataType> *new_tuple)
     {
-        NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key, data);
         NodeTuple<KeyType, DataType> *aux1 = this->start;
         NodeTuple<KeyType, DataType> **aux2 = &(this->start);
         while (aux1 != nullptr && aux1->value < new_tuple->value)
@@ -67,7 +66,17 @@ struct BLinkNode
         }
         *aux2 = new_tuple;
         new_tuple->next = aux1;
-        ++entries;
+        ++this->entries;
+    };
+
+    void insert(KeyType key) 
+    {
+        insert(new NodeTuple<KeyType, DataType>(key));
+    };
+
+    void insert(KeyType key, DataType data) 
+    {
+        insert(new NodeTuple<KeyType, DataType>(key, data));
     };
 
     BLinkNode<KeyType, DataType>* search(KeyType key)
@@ -80,24 +89,10 @@ struct BLinkNode
         return aux->left_node;
     }
 
-    void print()
-    {
-        NodeTuple<KeyType, DataType> *aux = this->start;
-        std::cout << "{ ";
-        while (aux != nullptr)
-        {
-            std::cout << aux->value << " ";
-            aux = aux->next;
-        }
-        std::cout << "}";
-        std::cout<<"\n";
-    };
-
     NodeTuple<KeyType, DataType>* divide()
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
-        this->entries = (this->entries) / 2;
-        for (int i = 0; i < this->entries; ++i)
+        for (int i = 0; i < (this->entries / 2) - 1; ++i)
         {
             aux = aux->next;
         }
@@ -125,4 +120,17 @@ struct BLinkNode
         }
         return aux->data_node->start->value;
     }
+
+    void print()
+    {
+        NodeTuple<KeyType, DataType> *aux = this->start;
+        std::cout << "{ ";
+        while (aux != nullptr)
+        {
+            std::cout << aux->value << " ";
+            aux = aux->next;
+        }
+        std::cout << "}\n";
+    };
+
 };

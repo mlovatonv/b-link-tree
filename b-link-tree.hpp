@@ -25,21 +25,24 @@ public:
     {
         NodeTuple<KeyType, DataType> *middle_tuple = original_node->divide();
         BLinkNode<KeyType, DataType> *parent_node = new BLinkNode<KeyType, DataType>(NON_LEAF);
-        BLinkNode<KeyType, DataType> *next_node = new BLinkNode<KeyType, DataType>(LEAF);
-
-        next_node->start = middle_tuple;
-        parent_node->start = new NodeTuple<KeyType, DataType>(middle_tuple->value);
+        parent_node->insert(middle_tuple->value);
+        parent_node->insert(middle_tuple->get_last()->value);
         parent_node->start->left_node = original_node;
-        parent_node->start->next = new NodeTuple<KeyType, DataType>(middle_tuple->get_last()->value);
-        parent_node->start->next->left_node = next_node;
-        original_node->next_node = next_node;
+
+        original_node->next_node = new BLinkNode<KeyType, DataType>(LEAF);
+        original_node->next_node->start = middle_tuple;
+        parent_node->start->next->left_node = original_node->next_node;
+
+        int initial_entries = original_node->entries;
+        original_node->entries = initial_entries / 2;
+        original_node->next_node->entries = initial_entries - original_node->entries;
 
         this->root = parent_node;
     };
 
     void split_non_leaf()
     {   
-        auto aux=this->root->start;
+        auto aux = this->root->start;
         NodeTuple<KeyType, DataType>* aux_tuple;
         for(int i=0;i<(this->root->entries)/2;++i){
             aux=aux->next;
