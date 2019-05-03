@@ -39,7 +39,14 @@ public:
 
     void split_non_leaf()
     {   
-        
+        auto aux=this->root->start;
+        NodeTuple<KeyType, DataType>* aux_tuple;
+        for(int i=0;i<(this->root->entries)/2;++i){
+            aux=aux->next;
+        }
+        aux_tuple=aux;
+        this->root->desconectar_tupla(aux->value);
+
     };
     
     void remove(KeyType key)
