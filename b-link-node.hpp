@@ -82,7 +82,7 @@ struct BLinkNode
         std::cout << "}";
         std::cout<<"\n";
     };
-    NodeTuple<KeyType, DataType>* desconectar_tupla(KeyType value){
+    void desconectar_tupla(KeyType value){
         auto aux1=this->start;
         auto aux2=this->start->next;
         while(aux2->value<value){
@@ -90,7 +90,7 @@ struct BLinkNode
             aux2=aux2->next;
         }
         aux1->next=aux2->next;
-        return aux2;
+        //return aux2;
     }
     NodeTuple<KeyType, DataType>* node_tuple(KeyType value){
         auto aux1=this->start;
