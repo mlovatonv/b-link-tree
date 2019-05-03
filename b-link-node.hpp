@@ -1,87 +1,67 @@
-#include <iostream>
+#include ".hpp"
 
-#define LEAF true
-#define NON_LEAF false
-
-template <class T>
+template <class KeyType, class DataType>
 class BLinkNode;
 
-template <class T>
+template <class KeyType, class DataType>
 struct NodeTuple
 {
-    T value;
-    NodeTuple<T> *next;
-    BLinkNode<T> *left_node;
+    KeyType value;
+    BLinkNode<KeyType, DataType> *left_node;
+    BLinkNode<DataType, DataType> *data_node;
+    NodeTuple<KeyType, DataType> *next;
 
-    NodeTuple(T value)
+    NodeTuple(KeyType value)
     {
         this->value = value;
-        this->next = nullptr;
         this->left_node = nullptr;
+        this->data_node = nullptr;
+        this->next = nullptr;
     };
 };
 
-template <class T>
+template <class KeyType, class DataType>
 struct BLinkNode
 {
-    NodeTuple<T> *start;
-    BLinkNode<T> *next_node;
-    bool m;
+    NodeTuple<KeyType, DataType> *start;
+    BLinkNode<KeyType, DataType> *next_node;
+    bool is_leaf;
     int entries;
 
     BLinkNode(bool is_leaf)
     {
         this->start = nullptr;
         this->next_node = nullptr;
-        this->m = is_leaf;
+        this->is_leaf = is_leaf;
         this->entries = 0;
     };
 
-    void insert(T value)
+    void insert(KeyType key, DataType data) 
     {
-        NodeTuple<T> *aux_ins = new NodeTuple<T>(value);
-        if (start == nullptr)
+        NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key);
+        new_tuple->data_node = new BLinkNode<DataType, DataType>(DATA);
+        new_tuple->data_node->start = new NodeTuple<DataType, DataType>(data);
+
+        NodeTuple<KeyType, DataType> *aux1 = this->start;
+        NodeTuple<KeyType, DataType> **aux2 = &(this->start);
+        while (aux1 != nullptr && aux1->value < new_tuple->value)
         {
-            this->start = aux_ins;
-        } 
-        else
-        {
-            NodeTuple<T> *aux = start;
-            if (value < start->value)
-            {
-                start = aux_ins;
-                aux_ins->next = aux;
-            }
-            else
-            {
-                while (aux->next != nullptr && aux->next->value < value)
-                {
-                    aux = aux->next;
-                }
-                if (aux->next != nullptr)
-                {
-                    NodeTuple<T> *aux2;
-                    aux2 = aux->next;
-                    aux->next = aux_ins;
-                    aux_ins->next = aux2;
-                }
-                else
-                {
-                    aux->next = aux_ins;
-                    aux_ins->next = nullptr;
-                }
-            }
+            aux2 = &(aux1->next);
+            aux1 = aux1->next;
         }
+        *aux2 = new_tuple;
+        new_tuple->next = aux1;
         ++entries;
     };
 
     void print()
     {
-        NodeTuple<T> *aux = start;
+        NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr)
         {
-            std::cout << aux->value << "\n";
+            std::cout << aux->value << " ";
             aux = aux->next;
         }
+        std::cout << "(" << this->entries << " entries)\n";
     };
 };
