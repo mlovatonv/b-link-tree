@@ -36,6 +36,15 @@ public:
 
     void print(BLinkNode<KeyType, DataType> *node)
     {
-        
+        if (node != nullptr)
+        {
+            node->print();
+            NodeTuple<KeyType, DataType> *aux = node->start;
+            while (aux != nullptr)
+            {
+                this->print(aux->left_node);
+                aux = aux->next;
+            }
+        }
     };
 };
