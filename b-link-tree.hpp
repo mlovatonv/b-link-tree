@@ -30,6 +30,9 @@ public:
     
     void remove(KeyType key)
     {};
+
+    void merge()
+    {};
     
     void print() 
     {
