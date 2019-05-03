@@ -1,5 +1,4 @@
-//#include "b-link-tree.hpp"
-#include "b-link-node.hpp"
+#include "b-link-tree.hpp"
 
 int main()
 {
@@ -13,6 +12,9 @@ int main()
     node.insert(20, 7);
     node.insert(3, 8);
     node.print();
-    //tree.print();
+
+    BLinkTree<int, int> tree;
+    tree.print();
+
     return 0;
 }
