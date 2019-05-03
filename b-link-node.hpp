@@ -18,6 +18,15 @@ struct NodeTuple
         this->data_node = nullptr;
         this->next = nullptr;
     };
+
+    NodeTuple(KeyType value, DataType data)
+    {
+        this->value = value;
+        this->left_node = nullptr;
+        this->data_node = new BLinkNode<DataType, DataType>(DATA);
+        this->data_node->start = new NodeTuple<DataType, DataType>(data);
+        this->next = nullptr;
+    };
 };
 
 template <class KeyType, class DataType>
@@ -38,10 +47,7 @@ struct BLinkNode
 
     void insert(KeyType key, DataType data) 
     {
-        NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key);
-        new_tuple->data_node = new BLinkNode<DataType, DataType>(DATA);
-        new_tuple->data_node->start = new NodeTuple<DataType, DataType>(data);
-
+        NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key, data);
         NodeTuple<KeyType, DataType> *aux1 = this->start;
         NodeTuple<KeyType, DataType> **aux2 = &(this->start);
         while (aux1 != nullptr && aux1->value < new_tuple->value)
