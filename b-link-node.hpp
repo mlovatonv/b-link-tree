@@ -4,34 +4,37 @@
 #define NON_LEAF false
 
 template <class T>
+class BLinkNode;
+
+template <class T>
 struct NodeTuple
 {
     T value;
     NodeTuple<T> *next;
-    NodeTuple<T> *AbajoIzq;
+    BLinkNode<T> *left_node;
 
-    NodeTuple(T value){
-        next=nullptr;
-        AbajoIzq=nullptr;
-        this->value=value;
+    NodeTuple(T value)
+    {
+        this->value = value;
+        this->next = nullptr;
+        this->left_node = nullptr;
     };
 };
 
 template <class T>
-class BLinkNode
+struct BLinkNode
 {
-    BLinkNode<T> *right;
     NodeTuple<T> *start;
-public:
+    BLinkNode<T> *next_node;
     bool m;
-    int tuple_number;
+    int entries;
 
     BLinkNode(bool is_leaf)
     {
-        this->m = is_leaf;
-        this->tuple_number = 0;
-        this->right = nullptr;
         this->start = nullptr;
+        this->next_node = nullptr;
+        this->m = is_leaf;
+        this->entries = 0;
     };
 
     void insert(T value)
@@ -69,7 +72,7 @@ public:
                 }
             }
         }
-        ++tuple_number;
+        ++entries;
     };
 
     void print()
