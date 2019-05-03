@@ -1,36 +1,30 @@
 #include "b-link-node.hpp"
 
-#define K 5
-
 template <class KeyType, class DataType>
 class BLinkTree
 {
-    BLinkNode<KeyType> *root;
+    BLinkNode<KeyType, DataType> *root;
 public:   
     BLinkTree()
     {
-        this->root = new BLinkNode<KeyType>;
+        this->root = new BLinkNode<KeyType, DataType>(LEAF);
     };
-    
-    void insert(KeyType key, DataType data);
+
+    void insert(KeyType key, DataType data) 
+    {
+        BLinkNode<KeyType, DataType> *aux_node = root;
+        NodeTuple<KeyType, DataType> *aux_tuple;
+        // while (!aux_node->is_leaf)
+        // {
+        //     while (aux_tuple )
+        // }
+    };
     
     void remove(KeyType key);
     
     void print() 
-    {
-        std::stack<BLinkNode<KeyType>*> node_stack;
-        BLinkNode<KeyType> *top_node;
-        node_stack.push(this->root);
-        while (!node_stack.empty())
-        {
-            top_node = node_stack.top();
-            node_stack.pop();
+    {};
 
-            top_node->print();
-            for (int i = 0; i < top_node->children_number; ++i)
-            {
-                node_stack.push(top_node->children[i]);
-            }
-        }
-    };
+    void print(BLinkNode<KeyType, DataType> *node)
+    {};
 };
