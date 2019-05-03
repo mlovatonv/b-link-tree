@@ -60,6 +60,16 @@ struct BLinkNode
         ++entries;
     };
 
+    BLinkNode<KeyType, DataType>* search(KeyType key)
+    {
+        NodeTuple<KeyType, DataType> *aux = this->start;
+        while (aux != nullptr && aux->value < key)
+        {
+            aux = aux->next;
+        }
+        return aux->left_node;
+    }
+
     void print()
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
