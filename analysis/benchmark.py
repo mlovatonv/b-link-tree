@@ -22,28 +22,28 @@ def generate_input(max_value=10000):
 
 
 def main():
-    insertion_sort = {}
-    merge_sort = {}
-    quick_sort = {}
+    b_link_tree = {}
+    mt_insertion_sort = {}
+    mt_quick_sort = {}
 
     input_dict = generate_input()
 
     print('Running simulation...')
 
     for input_size, input in input_dict.items():
-        insertion_sort[input_size] = benchmark_sort(
-            './../algorithms/insertion_sort', input)
-        merge_sort[input_size] = benchmark_sort(
-            './../algorithms/merge_sort', input)
-        quick_sort[input_size] = benchmark_sort(
-            './../algorithms/quick_sort', input)
+        b_link_tree[input_size] = benchmark_sort(
+            '../b-link-tree/main.cpp', input)
+        mt_insertion_sort[input_size] = benchmark_sort(
+            '../mt-insertion-sort/main.cpp', input)
+        mt_quick_sort[input_size] = benchmark_sort(
+            '../mt_quick_sort', input)
 
-    plt.plot(insertion_sort.keys(), insertion_sort.values(), 
-             label="Insertion sort")
-    plt.plot(merge_sort.keys(), merge_sort.values(),
-             label="Merge sort")
-    plt.plot(quick_sort.keys(), quick_sort.values(),
-             label="Quick sort")
+    plt.plot(b_link_tree.keys(), b_link_tree.values(), 
+             label="B-link-tree")
+    plt.plot(mt_insertion_sort.keys(), mt_insertion_sort.values(),
+             label="MT Insertion Sort")
+    plt.plot(mt_quick_sort.keys(), mt_quick_sort.values(),
+             label="MT Quicksort")
     plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, 
                mode="expand", borderaxespad=0.)       
     plt.show()
