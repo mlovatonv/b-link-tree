@@ -1,0 +1,8 @@
+# VS Code
+.vscode
+yarn-error.log
+dist
+.cache
+
+# executables
+a.out
