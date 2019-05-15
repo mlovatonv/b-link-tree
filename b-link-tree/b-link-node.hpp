@@ -27,30 +27,20 @@ struct NodeTuple
         this->data_node->start = new NodeTuple<DataType, DataType>(data);
         this->next = nullptr;
     };
-
-    NodeTuple<KeyType, DataType>* get_last()
-    {
-        NodeTuple<KeyType, DataType> *aux = this;
-        while (aux != nullptr && aux->next != nullptr)
-        {
-            aux = aux->next;
-        }
-        return aux;
-    };
 };
 
 template <class KeyType, class DataType>
 struct BLinkNode
 {
     NodeTuple<KeyType, DataType> *start;
-    BLinkNode<KeyType, DataType> *next_node;
+    BLinkNode<KeyType, DataType> *link_pointer;
     bool is_leaf;
     int entries;
 
     BLinkNode(bool is_leaf)
     {
         this->start = nullptr;
-        this->next_node = nullptr;
+        this->link_pointer = nullptr;
         this->is_leaf = is_leaf;
         this->entries = 0;
     };
@@ -69,7 +59,7 @@ struct BLinkNode
         ++this->entries;
     };
 
-    void insert(KeyType key) 
+    void insert(KeyType key, BLinkNode<KeyType, DataType>) 
     {
         insert(new NodeTuple<KeyType, DataType>(key));
     };
@@ -79,7 +69,7 @@ struct BLinkNode
         insert(new NodeTuple<KeyType, DataType>(key, data));
     };
 
-    BLinkNode<KeyType, DataType>* search(KeyType key)
+    BLinkNode<KeyType, DataType>* scan_node(KeyType key)
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr && aux->value < key)
@@ -88,6 +78,8 @@ struct BLinkNode
         }
         return aux->left_node;
     }
+
+    void move_right();
 
     NodeTuple<KeyType, DataType>* get_middle_tuple()
     {
@@ -98,6 +90,16 @@ struct BLinkNode
         }
         NodeTuple<KeyType, DataType> *middle_tuple = aux;
         return middle_tuple;
+    };
+
+    NodeTuple<KeyType, DataType>* get_last_tuple()
+    {
+        NodeTuple<KeyType, DataType> *aux = this->start;
+        while (aux != nullptr && aux->next != nullptr)
+        {
+            aux = aux->next;
+        }
+        return aux;
     };
 
     NodeTuple<KeyType, DataType>* get_tuple(KeyType value)
