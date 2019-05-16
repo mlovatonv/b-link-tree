@@ -92,19 +92,13 @@ void MergeSort(int v[], int n,int THREADS=1){
         int pivot=n/THREADS;
         int i=0;
         //todas las estructuras 
-        for(i; i<THREADS-1 ; ++i){
+        for(i; i<THREADS ; ++i){
             all_str[i].a = i*pivot;
             all_str[i].b = (i+1)*pivot-1;
             all_str[i].v=v;
             all_str[i].n=n-1;
-            cout<<i<<" a: "<<all_str[i].a<<" b: "<<all_str[i].b<<endl;
         }
-        all_str[i].a = i*pivot;
-        all_str[i].b = n-1;
-        all_str[i].v=v;
-        all_str[i].n=n-1;
-        cout<<i<<" a: "<<all_str[i].a<<" b: "<<all_str[i].b<<endl;
-
+        all_str[i-1].b = n-1;
 
         //start of the threads
         for(i=0;i<THREADS;++i){
@@ -115,19 +109,22 @@ void MergeSort(int v[], int n,int THREADS=1){
         }
         //Merge de todas las struct
         int aux2=THREADS;
-        int aux=ceil(aux2/2);
-        Str all_merge[aux];
-        for(i=0;i<aux;i=i+2){
+        int aux=ceil(aux2/2);//2
+
+        i=0;
+
+        Str all_merge[THREADS-1];
+        for(i;i<aux;++i){
             all_merge[i].v=v;
-            all_merge[i].a=all_str[i].a;
-            all_merge[i].b=all_str[i+1].b;
+            all_merge[i].a=all_str[2*i].a;
+            all_merge[i].b=all_str[2*i+1].b;
             all_merge[i].n=n-1;
-            all_merge[i].middle=all_str[i+1].a;
+            all_merge[i].middle=all_str[2*i+1].a;
         }
-        for(i=0;i<1;++i){
+        for(i=0;i<aux;++i){
             pthread_create(&threads[i], NULL,merge_p,&all_merge[i]);
         }
-        for(i=0;i<1;++i){
+        for(i=0;i<aux;++i){
             pthread_join(threads[i],NULL);
         }
     }
