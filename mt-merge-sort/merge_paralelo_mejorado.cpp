@@ -97,10 +97,12 @@ void MergeSort(int v[], int n,int THREADS=1){
             all_str[i].b = (i+1)*pivot-1;
             all_str[i].v=v;
             all_str[i].n=n-1;
+            /*
             cout<<"i . "<<i<<endl;
             cout<<" v "<<all_str[i].v<<endl;
             cout<<" a "<<all_str[i].a<<endl;
             cout<<" b "<<all_str[i].b<<endl;
+            */
         }
         all_str[i-2].b = n-1;
         //start of the threads
@@ -124,17 +126,18 @@ void MergeSort(int v[], int n,int THREADS=1){
             all_merge[i].b=all_str[2*i+1].b;
             all_merge[i].n=n-1;
             all_merge[i].middle=all_str[2*i+1].a;
+            /*
             cout<<i<<endl;
             cout<<" v "<<all_merge[i].v<<endl;
             cout<<" a "<<all_merge[i].a<<endl;
             cout<<" b "<<all_merge[i].b<<endl;
             cout<<" m "<<all_merge[i].middle<<endl;
+            */
 
         }
         cout<<i;
         //++cada_cuanto;
         for(int j=0;j<aux;++j){
-            cout<<"hete"<<endl;
             pthread_create(&threads[j], NULL,merge_p,&all_merge[j]);
         }
         for(int j=0;j<aux;++j){
@@ -145,56 +148,54 @@ void MergeSort(int v[], int n,int THREADS=1){
         i=0;
         
         while(aux!=1){
+            //cout<<i;
             aux=ceil(aux/2);//1
-                for(int y=0;y<aux;++y){
+            for(int y=0;y<aux;++y){
                 all_merge[y+i].v=v;
                 all_merge[y+i].a=all_merge[2*(y)].a;
                 all_merge[y+i].b=all_merge[2*(y)+1].b;
                 all_merge[y+i].n=n-1;
                 all_merge[y+i].middle=all_merge[2*(y)+1].a;
-
+/*
                 cout<<"y: "<<y+i<<endl;
                 cout<<" v "<<all_merge[y+i].v<<endl;
                 cout<<" a "<<all_merge[y+i].a<<endl;
                 cout<<" b "<<all_merge[y+i].b<<endl;
                 cout<<" middle "<<all_merge[y+i].middle<<endl;
+                */
                 ++ite_aux;
             }
             for(int j=0;j<aux;++j){
+                /*
                 cout<<"a "<<all_merge[j+i].a<<endl;
                 cout<<"b "<<all_merge[j+i].b<<endl;
                 cout<<"middle "<<all_merge[j+i].middle<<endl;
+                */
                 pthread_create(&threads[j], NULL,merge_p,&all_merge[j+i]);
             }
             for(int j=0;j<aux;++j){
                 pthread_join(threads[j],NULL);
             }
         }
-        
-        
+
     }
 }
 
 
 
 int main(){
-    
-    int n=32;
+    int n=100;
     int THREADS=16;
     srand(clock());
     int a[n];
     for(int i=0;i<n;++i){
         a[i]=rand()%(n*10);
     }
-    print_array(a,n);
     auto start = std::chrono::system_clock::now();
     MergeSort(a,n,THREADS);
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<float,std::milli> duration = end - start;
     cout <<"THREADS: "<<THREADS<<" TIME: "<< duration.count() <<"S"<<endl;
-
-    print_array(a,n);
-
     return 0;
 }
 
