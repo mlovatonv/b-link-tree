@@ -23,7 +23,7 @@ struct NodeTuple
     {
         this->value = value;
         this->left_node = nullptr;
-        this->data_node = new BLinkNode<DataType, DataType>(DATA);
+        this->data_node = new BLinkNode<DataType, DataType>();
         this->data_node->start = new NodeTuple<DataType, DataType>(data);
         this->next = nullptr;
     };
@@ -37,7 +37,7 @@ struct BLinkNode
     bool is_leaf;
     int entries;
 
-    BLinkNode(bool is_leaf)
+    BLinkNode(bool is_leaf = false)
     {
         this->start = nullptr;
         this->link_pointer = nullptr;
@@ -45,29 +45,36 @@ struct BLinkNode
         this->entries = 0;
     };
 
+    void insert_leaf(KeyType key, DataType data)
+    {
+        NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key, data);
+        this->insert(new_tuple);
+    }
+
+    void insert_non_leaf(KeyType key, BLinkNode<KeyType, DataType> *link_node)
+    {
+        BLinkNode<KeyType, DataType> *old_node = nullptr;
+        NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key);
+        this->insert(new_tuple);
+
+        old_node = new_tuple->next->left_node;
+        new_tuple->next->left_node = link_node;
+        new_tuple->left_node = old_node;
+    }
+
     void insert(NodeTuple<KeyType, DataType> *new_tuple)
     {
-        NodeTuple<KeyType, DataType> *aux1 = this->start;
+        NodeTuple<KeyType, DataType> *aux = this->start;
         NodeTuple<KeyType, DataType> **aux2 = &(this->start);
-        while (aux1 != nullptr && aux1->value < new_tuple->value)
+        while (aux != nullptr && aux->value < new_tuple->value)
         {
-            aux2 = &(aux1->next);
-            aux1 = aux1->next;
+            aux2 = &(aux->next);
+            aux = aux->next;
         }
         *aux2 = new_tuple;
-        new_tuple->next = aux1;
+        new_tuple->next = aux;
         ++this->entries;
-    };
-
-    void insert(KeyType key, BLinkNode<KeyType, DataType>) 
-    {
-        insert(new NodeTuple<KeyType, DataType>(key));
-    };
-
-    void insert(KeyType key, DataType data) 
-    {
-        insert(new NodeTuple<KeyType, DataType>(key, data));
-    };
+    }
 
     BLinkNode<KeyType, DataType>* scan_node(KeyType key)
     {
@@ -76,7 +83,7 @@ struct BLinkNode
         {
             aux = aux->next;
         }
-        return aux->left_node;
+        return aux ? aux->left_node : this->link_pointer;
     }
 
     void move_right();
@@ -126,6 +133,10 @@ struct BLinkNode
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
         std::cout << "{ ";
+        if (this->is_leaf)
+        {
+            std::cout << "M ";
+        }
         while (aux != nullptr)
         {
             std::cout << aux->value << " ";
