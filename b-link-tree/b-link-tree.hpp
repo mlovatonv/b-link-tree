@@ -29,7 +29,7 @@ public:
             }
         }
  
-        // current->move_right();
+        move_right(current, key);
         if (current->get_tuple(key) != nullptr)
         {
             return; // key already exists in tree
@@ -56,7 +56,7 @@ public:
                 current = node_stack.top();
                 node_stack.pop();
                 // current->lock();
-                // current->move_right();
+                move_right(current, key);
                 // aux->unlock();
             }
         }
@@ -79,7 +79,7 @@ public:
                 current = node_stack.top();
                 node_stack.pop();
                 // current->lock();
-                // current->move_right();
+                move_right(current, key);
                 // aux->unlock();
             }
         }
@@ -97,6 +97,18 @@ public:
             // current->unlock();
         }
     };
+
+    void move_right(Node* current, KeyType key)
+    {
+        Node* aux;
+        while (current && current->scan_node(key) == current->link_pointer)
+        {
+            aux = current->scan_node(key);
+            // aux->lock();
+            // current->unlock();
+            current = aux;
+        }
+    }
 
     KeyType rearrange_leaf(Node *current_node, Node *new_node, KeyType key, DataType data)
     {

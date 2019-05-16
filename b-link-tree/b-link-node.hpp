@@ -86,8 +86,6 @@ struct BLinkNode
         return aux ? aux->left_node : this->link_pointer;
     }
 
-    void move_right();
-
     NodeTuple<KeyType, DataType>* get_middle_tuple()
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
