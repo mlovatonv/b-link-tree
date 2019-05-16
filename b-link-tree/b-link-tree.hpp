@@ -4,11 +4,11 @@ template <class KeyType, class DataType>
 class BLinkTree
 {
 private:
-    Node *root;
-public: 
     typedef BLinkNode<KeyType, DataType> Node;
     typedef NodeTuple<KeyType, DataType> NodeInNode;
-  
+
+    Node *root;
+public: 
     BLinkTree()
     {
         this->root = new Node(LEAF);
@@ -36,12 +36,10 @@ public:
         }
 
         // current->lock();
-        KeyType max_value = 0;
         Node *link_node = nullptr;
-        aux = nullptr;
 
         // leaf case
-        if (current->entries >= MAX_ENTRIES)
+        if (current->entries < MAX_ENTRIES)
         {
             current->insert_leaf(key, data);
             // current->unlock();
@@ -49,22 +47,24 @@ public:
         }
         else
         {
-            Node *new_node = new Node();
-            max_value = this->rearrange_leaf(current, new_node, key, data);
-            aux = current;
-            key = max_value;
+            Node *new_node = new Node(LEAF);
+            key = this->rearrange_leaf(current, new_node, key, data);
             link_node = new_node;
-            current = node_stack.top();
-            node_stack.pop();
-            // current->lock();
-            // current->move_right();
-            // aux->unlock();
+            if (!node_stack.empty())
+            {
+                aux = current;
+                current = node_stack.top();
+                node_stack.pop();
+                // current->lock();
+                // current->move_right();
+                // aux->unlock();
+            }
         }
-        
+
         // non-leaf case
         while (!node_stack.empty())
         {
-            if (current->entries >= MAX_ENTRIES) // current is safe
+            if (current->entries < MAX_ENTRIES) // current is safe
             {
                 current->insert_non_leaf(key, link_node);
                 link_node = nullptr;
@@ -73,9 +73,8 @@ public:
             else // must split node
             {
                 Node *new_node = new Node();
-                max_value = this->rearrange_non_leaf(current, new_node, key, link_node);
+                key = this->rearrange_non_leaf(current, new_node, key, link_node);
                 aux = current;
-                key = max_value;
                 link_node = new_node;
                 current = node_stack.top();
                 node_stack.pop();
@@ -88,13 +87,14 @@ public:
         if (link_node)
         {
             Node *new_node = new Node();
-            NodeTuple<KeyType, DataType> *left = new NodeTuple<KeyType, DataType>(max_value);
+            NodeTuple<KeyType, DataType> *left = new NodeTuple<KeyType, DataType>(key);
             NodeTuple<KeyType, DataType> *right = new NodeTuple<KeyType, DataType>(link_node->get_last_tuple()->value);
             new_node->insert(left);
             new_node->insert(right);
             new_node->start->left_node = this->root;
             new_node->start->next->left_node = link_node;
             this->root = new_node;
+            // current->unlock();
         }
     };
 
