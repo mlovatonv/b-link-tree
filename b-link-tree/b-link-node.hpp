@@ -133,6 +133,10 @@ struct BLinkNode
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
         std::cout << "{ ";
+        if (this->is_leaf)
+        {
+            std::cout << "M ";
+        }
         while (aux != nullptr)
         {
             std::cout << aux->value << " ";
