@@ -60,13 +60,12 @@ void merge(int v[], int a, int b, int middle){
     }
 
 }
-/*
-typedef struct{
-    vector<int> *v;
-    int a;
-    int b;
-}Str;
-*/
+void* merge_p(void* all){
+    Str* some=(Str*)all;
+    int middle=(some->b-some->a)/2 +some->a+1;
+    merge(some->v,some->a,some->b,middle);
+
+}
 
 void merge_sort(int v[], int a, int b){
     int middle=(b-a)/2 +a+1;
@@ -117,7 +116,55 @@ void MergeSort(int v[], int n,int hilos=1){
 
     }
     if(hilos == 4){
+        int pivot=(n/4);
 
+        Str Struct1,Struct2,Struct3,Struct4,Struct5,Struct6;
+
+        Struct1.a=0;
+        Struct1.b=pivot-1;
+        Struct1.v=v;
+        Struct1.n= n-1;
+
+        Struct2.a=pivot;
+        Struct2.b=pivot*2 -1;
+        Struct2.v=v;
+        Struct2.n=n-1;
+
+        Struct3.a=pivot*2;
+        Struct3.b=pivot*3-1;
+        Struct3.v=v;
+        Struct3.n=n-1;
+
+        Struct4.a=pivot*3;
+        Struct4.b=n-1;
+        Struct4.v=v;
+        Struct4.n=n-1;
+
+        Struct5.a=0;
+        Struct5.b=pivot*2-1;
+        Struct5.v=v;
+        Struct5.n= n-1;
+
+        Struct6.a=pivot*2;
+        Struct6.b=n-1;
+        Struct6.v=v;
+        Struct6.n=n-1;
+
+        int THREADS=4;
+        pthread_t threads[THREADS];
+        pthread_create(&threads[0], NULL,merge_sort_C2,&Struct1);
+        pthread_create(&threads[1], NULL,merge_sort_C2,&Struct2);
+        pthread_create(&threads[2], NULL,merge_sort_C2,&Struct3);
+        pthread_create(&threads[3], NULL,merge_sort_C2,&Struct4);
+        for(int i=0;i<THREADS;++i){
+            pthread_join(threads[i],NULL);
+        }
+        pthread_create(&threads[0], NULL,merge_p,&Struct5);
+        pthread_create(&threads[1], NULL,merge_p,&Struct6);
+        for(int i=0;i<2;++i){
+            pthread_join(threads[i],NULL);
+        }
+        merge(v,0,n-1,pivot*2);
     }
 }
 
@@ -125,11 +172,22 @@ void MergeSort(int v[], int n,int hilos=1){
 
 int main(){
     
-    int n=4;
-    int a[n]={7,6,3,2};
-    print_array(a,n);
-    MergeSort(a,n,2);
-    print_array(a,n);
+    int n=1000000;
+    int THREADS=1;
+    srand(clock());
+    int a[n];
+    for(int i=0;i<n;++i){
+        a[i]=rand()%(n*10);
+    }
+    //print_array(a,n);
+    cout<<endl;
+    auto start = std::chrono::system_clock::now();
+    MergeSort(a,n,THREADS);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<float,std::milli> duration = end - start;
+    cout <<"THREADS: "<<THREADS<<" TIME: "<< duration.count() <<"S"<<endl;
+
+    //print_array(a,n);
 
     return 0;
 }
