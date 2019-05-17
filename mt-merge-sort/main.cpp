@@ -1,65 +1,197 @@
+#include <string.h>
 #include <iostream>
-#include <limits>
-#define INT_MAX 2147483647
+#include <vector>
+#include <chrono>
+#include <fstream>
+#include <math.h>
+#include <pthread.h>
+using namespace std;
 
-void merge(int array[], int p, int q, int r)
-{
-    int left_length = q - p + 1, 
-        right_length = r - q;
+void print_array(int v[],int n){
+    for(int i=0;i<n;++i){
+        cout<<v[i]<<" ";
+    }
+    cout<<endl;
+}
 
-    int left[left_length + 1], right[right_length + 1];
+typedef struct{
+    int* v;
+    int n;
+    int a;
+    int b;
+    int middle;
+}Str;
 
-    for (int i = 0; i < left_length; ++i) 
-    {
-        left[i] = array[p - 1 + i];
+void merge(int v[], int a, int b, int middle){
+    int counter1=middle-a;
+    int counter2=b- middle +1;
+
+    int I[counter1];
+    int D[counter2];
+    for(int i=0;i<counter1;++i){
+        I[i]=v[i+a];
+    }
+    for(int i=0;i<counter2;++i){
+        D[i]=v[i+middle];
     }
 
-    for (int j = 0; j < right_length; ++j) 
-    {
-        right[j] = array[q + j];
+    int pi=0;
+    int pd=0;
+    int ite=a;
+    while(pi<counter1 && pd<counter2){
+        if(I[pi] <= D[pd]){
+            v[ite]=I[pi];
+            ++pi;
+
+        }else{
+            v[ite]=D[pd];
+            ++pd;
+        }
+        ++ite;
+    }
+    while(pi < counter1){
+        v[ite]=I[pi];
+        ++pi;
+        ++ite;
+    }
+    while(pd < counter2){
+        v[ite]=D[pd];
+        ++pd;
+        ++ite;
     }
 
-    left[left_length] = INT_MAX;
-    right[right_length] = INT_MAX;
+}
+void* merge_p(void* all){
+    Str* some=(Str*)all;
+    //int middle=(some->b-some->a)/2 +some->a+1;
+    merge(some->v,some->a,some->b,some->middle);
 
-    int i = 0, j = 0;
-    for (int k = p - 1; k < r; ++k) 
-    {
-        if (left[i] <= right[j])
-        {
-            array[k] = left[i];
-            ++i;
+}
+
+void merge_sort(int v[], int a, int b){
+    int middle=(b-a)/2 +a+1;
+    if(b>a){
+        merge_sort(v,a,middle-1);
+        merge_sort(v,middle,b);
+        merge(v,a,b,middle);
+    }
+}
+void* merge_sort_p(void* all){
+    Str* some=(Str*)all;
+    merge_sort(some->v,some->a,some->b);
+
+}
+
+void MergeSort(int v[], int n,int THREADS=1){
+    if(THREADS==1){
+        merge_sort(v,0,n-1);
+    }
+    else{
+        pthread_t threads[THREADS];
+        Str all_str[THREADS];
+        int pivot=n/THREADS;
+        int i=0;
+        //todas las estructuras 
+        for(i; i<THREADS ; ++i){
+            all_str[i].a = i*pivot;
+            all_str[i].b = (i+1)*pivot-1;
+            all_str[i].v=v;
+            all_str[i].n=n-1;
+            /*
+            cout<<"i . "<<i<<endl;
+            cout<<" v "<<all_str[i].v<<endl;
+            cout<<" a "<<all_str[i].a<<endl;
+            cout<<" b "<<all_str[i].b<<endl;
+            */
         }
-        else 
-        {
-            array[k] = right[j];
-            ++j;
+        all_str[i-2].b = n-1;
+        //start of the threads
+        for(int k=0;k<THREADS;++k){
+            pthread_create(&threads[k], NULL,merge_sort_p,&all_str[k]);
         }
+        for(int k2=0;k2<THREADS;++k2){
+            pthread_join(threads[k2],NULL);
+        }
+
+        //Merge de todas las struct
+        int aux2=THREADS;
+        int aux=ceil(aux2/2);//2
+
+        int cada_cuanto=1;
+        Str all_merge[THREADS-1];
+
+        for(i=0;i<aux;++i){
+            all_merge[i].v=v;
+            all_merge[i].a=all_str[2*i].a;
+            all_merge[i].b=all_str[2*i+1].b;
+            all_merge[i].n=n-1;
+            all_merge[i].middle=all_str[2*i+1].a;
+            /*
+            cout<<i<<endl;
+            cout<<" v "<<all_merge[i].v<<endl;
+            cout<<" a "<<all_merge[i].a<<endl;
+            cout<<" b "<<all_merge[i].b<<endl;
+            cout<<" m "<<all_merge[i].middle<<endl;
+            */
+
+        }
+        cout<<i;
+        //++cada_cuanto;
+        for(int j=0;j<aux;++j){
+            pthread_create(&threads[j], NULL,merge_p,&all_merge[j]);
+        }
+        for(int j=0;j<aux;++j){
+            pthread_join(threads[j],NULL);
+        }
+        
+        int ite_aux=i;
+        i=0;
+        
+        while(aux!=1){
+            //cout<<i;
+            aux=ceil(aux/2);//1
+            for(int y=0;y<aux;++y){
+                all_merge[y+i].v=v;
+                all_merge[y+i].a=all_merge[2*(y)].a;
+                all_merge[y+i].b=all_merge[2*(y)+1].b;
+                all_merge[y+i].n=n-1;
+                all_merge[y+i].middle=all_merge[2*(y)+1].a;
+/*
+                cout<<"y: "<<y+i<<endl;
+                cout<<" v "<<all_merge[y+i].v<<endl;
+                cout<<" a "<<all_merge[y+i].a<<endl;
+                cout<<" b "<<all_merge[y+i].b<<endl;
+                cout<<" middle "<<all_merge[y+i].middle<<endl;
+                */
+                ++ite_aux;
+            }
+            for(int j=0;j<aux;++j){
+                /*
+                cout<<"a "<<all_merge[j+i].a<<endl;
+                cout<<"b "<<all_merge[j+i].b<<endl;
+                cout<<"middle "<<all_merge[j+i].middle<<endl;
+                */
+                pthread_create(&threads[j], NULL,merge_p,&all_merge[j+i]);
+            }
+            for(int j=0;j<aux;++j){
+                pthread_join(threads[j],NULL);
+            }
+        }
+
     }
 }
 
-void merge_sort(int array[], int p, int r) 
+int main()
 {
-    if (p < r) 
+    int n, x, threads;
+    cin >> threads;
+    cin >> n;
+    int array[n];
+    for (int i = 0; i < n; ++i)
     {
-        int q = (p + r) / 2;
-        merge_sort(array, p, q);
-        merge_sort(array, q + 1, r);
-        merge(array, p, q, r);
-    }
-}
-
-int main() 
-{
-    int size = 5;
-    int foo[size] = {2, 4, 1, 6, 0};
-
-    merge_sort(foo, 1, size);
-
-    for (auto &x : foo) 
-    {
-        std::cout << x << " ";
-    }
-    
+        cin >> x;
+        array[i] = x;
+    } 
+    MergeSort(array, n, threads);
     return 0;
 }
