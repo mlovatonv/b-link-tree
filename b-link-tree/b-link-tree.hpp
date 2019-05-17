@@ -58,10 +58,9 @@ public:
             return; // key already exists in tree
         }
 
-        current->lock();
+        // current->lock();
         while (current)
         {
-            current->print();
             if (current->entries < MAX_ENTRIES) // current is safe
             {
                 if (!current->is_leaf)
@@ -72,7 +71,7 @@ public:
                 {
                     current->insert_leaf(key, data);   
                 }
-                current->unlock();
+                // current->unlock();
                 return;
             }
             else // must split node
@@ -93,14 +92,14 @@ public:
                 {
                     current = node_stack.top();
                     node_stack.pop();
-                    current->lock();
+                    // current->lock();
                     move_right(current, key);
                 }
                 else 
                 {
                     current = nullptr;
                 }
-                aux->unlock();
+                // aux->unlock();
             }
         }
 
@@ -112,7 +111,7 @@ public:
         new_root_node->start->left_node = this->root;
         new_root_node->start->next->left_node = link_node;
         this->root = new_root_node;
-        current->unlock();
+        // current->unlock();
     };
 
     void move_right(Node* current, KeyType key)
@@ -121,8 +120,8 @@ public:
         while (current && current->scan_node(key) == current->link_pointer)
         {
             aux = current->scan_node(key);
-            aux->lock();
-            current->unlock();
+            // aux->lock();
+            // current->unlock();
             current = aux;
         }
     }
