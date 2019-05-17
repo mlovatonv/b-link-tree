@@ -7,7 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    std::ifstream infile("data.txt");
+    const std::string path = "/home/mlovatonv/utec/ada/b-link-tree/b-link-tree-gui/data.txt";
+    std::ifstream infile(path);
     std::string line;
     int key;
     std::string data;
