@@ -1,6 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "../b-link-tree/b-link-tree.hpp"
+
+#include <fstream>
+#include <string>
+#include <sstream>
 #include <QMainWindow>
 
 namespace Ui {
@@ -20,6 +25,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    BLinkTree<int, std::string> tree;
 };
 
 #endif // MAINWINDOW_H

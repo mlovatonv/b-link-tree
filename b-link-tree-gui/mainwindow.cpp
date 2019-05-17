@@ -6,6 +6,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    std::ifstream infile("data.txt");
+    std::string line;
+    int key;
+    std::string data;
+    while (std::getline(infile, line))
+    {
+        std::istringstream iss(line);
+        if (!(iss >> key >> data)) { break; } // error
+        tree.insert(key, data);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -15,6 +26,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    ui->resultText->setText(ui->searchText->toPlainText());
+    const QString str = QString::fromStdString(tree.search(ui->searchText->toPlainText().toInt()));
+    ui->resultText->setText(str);
     ui->searchText->setText("");
 }
