@@ -1,7 +1,4 @@
 #include ".hpp"
-pthread_mutex_t mutex1;
-pthread_mutex_t mutex2;
-
 
 template <class KeyType, class DataType>
 class BLinkNode;
@@ -137,7 +134,7 @@ struct BLinkNode
     DataType get_data(KeyType value, DataType _default)
     {
         while (this->is_lock) {};
-        
+
         NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr && aux->value != value)
         {
@@ -162,17 +159,17 @@ struct BLinkNode
         std::cout << "}\n";
     };
 
-    void lock()
-    {
-        pthread_mutex_lock(&mutex1);   
-        (*this).is_lock=true;
-        pthread_mutex_unlock(&mutex1);
-    };
+    // void lock()
+    // {
+    //     pthread_mutex_lock(&mutex1);   
+    //     (*this).is_lock=true;
+    //     pthread_mutex_unlock(&mutex1);
+    // };
 
-    void unlock()
-    {
-        pthread_mutex_lock(&mutex2);
-        (*this).is_lock=false;
-        pthread_mutex_unlock(&mutex2);
-    };
+    // void unlock()
+    // {
+    //     pthread_mutex_lock(&mutex2);
+    //     (*this).is_lock=false;
+    //     pthread_mutex_unlock(&mutex2);
+    // };
 };

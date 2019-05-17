@@ -1,13 +1,6 @@
 #include "b-link-node.hpp"
 #include <pthread.h>
 
-
-pthread_mutex_t mutex3;
-pthread_mutex_t mutex4;
-pthread_mutex_t mutex5;
-pthread_barrier_t our_barrier;
-
-
 template <class KeyType, class DataType>
 class BLinkTree
 {
