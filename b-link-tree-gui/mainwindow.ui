@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>299</height>
+    <width>848</width>
+    <height>378</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,12 +16,23 @@
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QLabel" name="title">
+      <property name="font">
+       <font>
+        <family>Ubuntu Condensed</family>
+        <pointsize>27</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>Base de datos</string>
+       <string>Buscador de Personas</string>
       </property>
       <property name="textFormat">
        <enum>Qt::AutoText</enum>
@@ -35,7 +46,7 @@
      <widget class="QTextEdit" name="searchText">
       <property name="maximumSize">
        <size>
-        <width>400</width>
+        <width>1000000</width>
         <height>30</height>
        </size>
       </property>
@@ -53,6 +64,11 @@
     </item>
     <item>
      <widget class="QLabel" name="resultText">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>&lt;Resultado&gt;</string>
       </property>
