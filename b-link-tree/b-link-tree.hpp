@@ -1,4 +1,12 @@
 #include "b-link-node.hpp"
+#include <pthread.h>
+
+
+pthread_mutex_t mutex3;
+pthread_mutex_t mutex4;
+pthread_mutex_t mutex5;
+pthread_barrier_t our_barrier;
+
 
 template <class KeyType, class DataType>
 class BLinkTree
@@ -50,7 +58,7 @@ public:
             return; // key already exists in tree
         }
 
-        // current->lock();
+        current->lock();
         while (current)
         {
             current->print();
@@ -64,7 +72,7 @@ public:
                 {
                     current->insert_leaf(key, data);   
                 }
-                // current->unlock();
+                current->unlock();
                 return;
             }
             else // must split node
@@ -85,14 +93,14 @@ public:
                 {
                     current = node_stack.top();
                     node_stack.pop();
-                    // current->lock();
+                    current->lock();
                     move_right(current, key);
                 }
                 else 
                 {
                     current = nullptr;
                 }
-                // aux->unlock();
+                aux->unlock();
             }
         }
 
@@ -104,7 +112,7 @@ public:
         new_root_node->start->left_node = this->root;
         new_root_node->start->next->left_node = link_node;
         this->root = new_root_node;
-        // current->unlock();
+        current->unlock();
     };
 
     void move_right(Node* current, KeyType key)
@@ -113,8 +121,8 @@ public:
         while (current && current->scan_node(key) == current->link_pointer)
         {
             aux = current->scan_node(key);
-            // aux->lock();
-            // current->unlock();
+            aux->lock();
+            current->unlock();
             current = aux;
         }
     }
