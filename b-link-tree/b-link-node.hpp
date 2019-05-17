@@ -1,4 +1,7 @@
 #include ".hpp"
+pthread_mutex_t mutex1;
+pthread_mutex_t mutex2;
+
 
 template <class KeyType, class DataType>
 class BLinkNode;
@@ -36,6 +39,7 @@ struct BLinkNode
     BLinkNode<KeyType, DataType> *link_pointer;
     bool is_leaf;
     int entries;
+    bool is_lock;
 
     BLinkNode(bool is_leaf = false)
     {
@@ -43,16 +47,19 @@ struct BLinkNode
         this->link_pointer = nullptr;
         this->is_leaf = is_leaf;
         this->entries = 0;
+        this->is_lock=false;
     };
 
     void insert_leaf(KeyType key, DataType data)
     {
+        while(this->is_lock){};
         NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key, data);
         this->insert(new_tuple);
     }
 
     void insert_non_leaf(KeyType key, BLinkNode<KeyType, DataType> *link_node)
     {
+        while(this->is_lock){};
         BLinkNode<KeyType, DataType> *old_node = nullptr;
         NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key);
         this->insert(new_tuple);
@@ -64,6 +71,7 @@ struct BLinkNode
 
     void insert(NodeTuple<KeyType, DataType> *new_tuple)
     {
+        while(this->is_lock){};
         NodeTuple<KeyType, DataType> *aux = this->start;
         NodeTuple<KeyType, DataType> **aux2 = &(this->start);
         while (aux != nullptr && aux->value < new_tuple->value)
@@ -78,6 +86,7 @@ struct BLinkNode
 
     BLinkNode<KeyType, DataType>* scan_node(KeyType key)
     {
+        while(this->is_lock){};
         NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr && aux->value < key)
         {
@@ -88,6 +97,7 @@ struct BLinkNode
 
     NodeTuple<KeyType, DataType>* get_middle_tuple()
     {
+        while(this->is_lock){};
         NodeTuple<KeyType, DataType> *aux = this->start;
         for (int i = 0; i < (this->entries / 2) - 1; ++i)
         {
@@ -99,6 +109,7 @@ struct BLinkNode
 
     NodeTuple<KeyType, DataType>* get_last_tuple()
     {
+        while(this->is_lock){};
         NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr && aux->next != nullptr)
         {
@@ -109,6 +120,7 @@ struct BLinkNode
 
     NodeTuple<KeyType, DataType>* get_tuple(KeyType value)
     {
+        while(this->is_lock){};
         NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr && aux->value != value)
         {
@@ -142,5 +154,17 @@ struct BLinkNode
         }
         std::cout << "}\n";
     };
+    void lock()
+    {
+        pthread_mutex_lock(&mutex1);   
+        (*this).is_lock=true;
+        pthread_mutex_unlock(&mutex1);
+    }
+    void unlock()
+    {
+        pthread_mutex_lock(&mutex2);
+        (*this).is_lock=false;
+        pthread_mutex_unlock(&mutex2);
+    }
 
 };

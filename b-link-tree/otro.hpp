@@ -1,12 +1,11 @@
 #include "b-link-node.hpp"
 #include <pthread.h>
 
-
+pthread_mutex_t mutex1;
+pthread_mutex_t mutex2;
 pthread_mutex_t mutex3;
 pthread_mutex_t mutex4;
 pthread_mutex_t mutex5;
-pthread_barrier_t our_barrier;
-
 
 template <class KeyType, class DataType>
 class BLinkTree
@@ -38,12 +37,9 @@ public:
 
     void insert(KeyType key, DataType data) 
     {
-        //pthread_barrier_wait(&our_barrier);
-        //pthread_mutex_lock(&mutex1);
         std::stack<Node*> node_stack;
         Node *current = root;
         Node *aux = nullptr;
-        
         while (!current->is_leaf) // find a candidate leaf
         {
             aux = current;
@@ -59,34 +55,39 @@ public:
         {
             return; // key already exists in tree
         }
-
-        current->lock();
+        pthread_mutex_lock(&mutex1);
+        current;
+        //current->lock();
         Node *link_node = nullptr;
 
         // leaf case
         if (current->entries < MAX_ENTRIES)
         {
             current->insert_leaf(key, data);
-            current->unlock();
+            pthread_mutex_unlock(&mutex1);
+
+            //current->unlock();
             return;
         }
         else
         {
-            current->unlock();
+            pthread_mutex_unlock(&mutex1);
+            //current->unlock();
             Node *new_node = new Node(LEAF);
             key = this->rearrange_leaf(current, new_node, key, data);
             link_node = new_node;
+            pthread_mutex_lock(&mutex2);
             if (!node_stack.empty())
             {
                 aux = current;
                 current = node_stack.top();
                 node_stack.pop();
-                current->lock();
+                // current->lock();
                 move_right(current, key);
-                aux->unlock();
+                // aux->unlock();
             }
+
         }
-        
 
         // non-leaf case
         while (!node_stack.empty())
@@ -95,7 +96,8 @@ public:
             {
                 current->insert_non_leaf(key, link_node);
                 link_node = nullptr;
-                current->unlock();
+                // current->unlock();
+                pthread_mutex_unlock(&mutex2);
             }
             else // must split node
             {
@@ -105,11 +107,13 @@ public:
                 link_node = new_node;
                 current = node_stack.top();
                 node_stack.pop();
-                current->lock();
+                pthread_mutex_lock(&mutex3);
+                // current->lock();
                 move_right(current, key);
-                aux->unlock();
+                // aux->unlock();
             }
         }
+        pthread_mutex_unlock(&mutex2);
 
         if (link_node)
         {
@@ -121,20 +125,23 @@ public:
             new_node->start->left_node = this->root;
             new_node->start->next->left_node = link_node;
             this->root = new_node;
-            current->unlock();
+            // current->unlock();
+            pthread_mutex_unlock(&mutex3);
         }
     };
 
     void move_right(Node* current, KeyType key)
     {
         Node* aux;
+        pthread_mutex_lock(&mutex4);
         while (current && current->scan_node(key) == current->link_pointer)
         {
             aux = current->scan_node(key);
-            aux->lock();
-            current->unlock();
+            // aux->lock();
+            // current->unlock();
             current = aux;
         }
+        pthread_mutex_unlock(&mutex4);
     }
 
     KeyType rearrange_leaf(Node *current_node, Node *new_node, KeyType key, DataType data)
