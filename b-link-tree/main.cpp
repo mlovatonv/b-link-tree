@@ -1,10 +1,21 @@
 #include "b-link-tree.hpp"
+#include <fstream>
+#include <string>
+#include <sstream>
 
 int main()
 {
     BLinkTree<int, std::string> tree;
-    tree.insert(2, "maria");
-    tree.insert(100, "indhira");
-    std::cout << tree.search(2) << "\n";
+    std::ifstream infile("../b-link-tree-gui/data.txt");
+    std::string line;
+    int key;
+    std::string data;
+    while (std::getline(infile, line))
+    {
+        std::istringstream iss(line);
+        if (!(iss >> key >> data)) { break; } // error
+        tree.insert(key, data);
+    }
+    std::cout << tree.search(1) << "\n";
     return 0;
 }
