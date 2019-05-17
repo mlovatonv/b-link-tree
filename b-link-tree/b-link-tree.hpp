@@ -21,7 +21,7 @@ public:
         {
             current = current->scan_node(key);
         }
-        while (current && current->scan_node(key) == current->link_pointer)
+        while (!current->is_leaf && current->scan_node(key) == current->link_pointer)
         {
             current = current->link_pointer;
         }
