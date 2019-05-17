@@ -60,7 +60,6 @@ struct BLinkNode
     void insert_non_leaf(KeyType key, BLinkNode<KeyType, DataType> *link_node)
     {
         while (this->is_lock) {};
-        BLinkNode<KeyType, DataType> *old_node = nullptr;
         NodeTuple<KeyType, DataType> *new_tuple = new NodeTuple<KeyType, DataType>(key);
         this->insert(new_tuple);
         BLinkNode<KeyType, DataType> *old_node = new_tuple->next->left_node;
