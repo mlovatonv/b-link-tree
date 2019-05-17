@@ -21,7 +21,7 @@ void* insert_parallel(void * all){
 }
 int main()
 {
-    BLinkTree<int, std::string> tree;
+    // BLinkTree<int, std::string> tree;
     // int THREADS=2;
     // pthread_mutex_init(&mutex1, NULL);
     // pthread_mutex_init(&mutex2, NULL);
@@ -50,12 +50,13 @@ int main()
     //     pthread_join(threads[i],NULL);
     // }
 
-    tree.insert(1, "hola");
-    tree.insert(2, "hola");
-    tree.insert(3, "hola");
-    tree.insert(4, "hola");
-    tree.insert(5, "hola");
-    tree.insert(6, "hola");
-    tree.print();
+    BLinkTree<int, int> tree;
+    int n, x, threads = 2;
+    cin >> n;
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> x;
+        tree.insert(x, x);
+    }
     return 0;
 }

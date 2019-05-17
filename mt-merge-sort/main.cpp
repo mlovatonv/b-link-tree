@@ -183,8 +183,7 @@ void MergeSort(int v[], int n,int THREADS=1){
 
 int main()
 {
-    int n, x, threads;
-    cin >> threads;
+    int n, x, threads = 2;
     cin >> n;
     int array[n];
     for (int i = 0; i < n; ++i)

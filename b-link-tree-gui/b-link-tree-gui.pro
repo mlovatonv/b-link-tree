@@ -35,3 +35,9 @@ FORMS += \
 
 DISTFILES += \
     data.txt
+
+QMAKE_CXXFLAGS += \
+        -std=c++11 -pthread
+
+LIBS += \
+        -pthread
