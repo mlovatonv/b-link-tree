@@ -14,7 +14,7 @@ public:
         this->root = new Node(LEAF);
     };
 
-    DataType search(KeyType key)
+    DataType search(KeyType key, DataType _default)
     {
         Node *current = root;
         while (!current->is_leaf) // find a candidate leaf
@@ -25,7 +25,7 @@ public:
         {
             current = current->link_pointer;
         }
-        return current->get_data(key);
+        return current->get_data(key, _default);
     }
 
     void insert(KeyType key, DataType data) 

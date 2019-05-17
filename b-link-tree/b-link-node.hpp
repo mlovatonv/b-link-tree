@@ -117,14 +117,14 @@ struct BLinkNode
         return aux;
     };
 
-    DataType get_data(KeyType value)
+    DataType get_data(KeyType value, DataType _default)
     {
         NodeTuple<KeyType, DataType> *aux = this->start;
         while (aux != nullptr && aux->value != value)
         {
             aux = aux->next;
         }
-        return aux->data_node->start->value;
+        return aux ? aux->data_node->start->value : _default;
     }
 
     void print()

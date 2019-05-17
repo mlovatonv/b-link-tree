@@ -27,7 +27,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    const QString str = QString::fromStdString(tree.search(ui->searchText->toPlainText().toInt()));
+    const QString str = QString::fromStdString(tree.search(ui->searchText->toPlainText().toInt(), "No se encontró."));
     ui->resultText->setText(str);
     ui->searchText->setText("");
 }
