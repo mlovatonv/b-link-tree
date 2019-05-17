@@ -33,13 +33,14 @@ public:
         std::stack<Node*> node_stack;
         Node *current = root;
         Node *aux = nullptr;
+        Node *link_node = nullptr;
         while (!current->is_leaf) // find a candidate leaf
         {
             aux = current;
             current = current->scan_node(key);
             if (current != aux->link_pointer)
             {
-                node_stack.push(current);
+                node_stack.push(aux);
             }
         }
  
@@ -50,66 +51,60 @@ public:
         }
 
         // current->lock();
-        Node *link_node = nullptr;
-
-        // leaf case
-        if (current->entries < MAX_ENTRIES)
+        while (current)
         {
-            current->insert_leaf(key, data);
-            // current->unlock();
-            return;
-        }
-        else
-        {
-            Node *new_node = new Node(LEAF);
-            key = this->rearrange_leaf(current, new_node, key, data);
-            link_node = new_node;
-            if (!node_stack.empty())
-            {
-                aux = current;
-                current = node_stack.top();
-                node_stack.pop();
-                // current->lock();
-                move_right(current, key);
-                // aux->unlock();
-            }
-        }
-
-        // non-leaf case
-        while (!node_stack.empty())
-        {
+            current->print();
             if (current->entries < MAX_ENTRIES) // current is safe
             {
-                current->insert_non_leaf(key, link_node);
-                link_node = nullptr;
+                if (!current->is_leaf)
+                {
+                    current->insert_non_leaf(key, link_node);
+                }
+                else
+                {
+                    current->insert_leaf(key, data);   
+                }
                 // current->unlock();
+                return;
             }
             else // must split node
             {
                 Node *new_node = new Node();
-                key = this->rearrange_non_leaf(current, new_node, key, link_node);
+                if (!current->is_leaf)
+                {
+                    key = this->rearrange_non_leaf(current, new_node, key, link_node);
+                }
+                else
+                {
+                    new_node->is_leaf = true;
+                    key = this->rearrange_leaf(current, new_node, key, data);
+                }
                 aux = current;
                 link_node = new_node;
-                current = node_stack.top();
-                node_stack.pop();
-                // current->lock();
-                move_right(current, key);
+                if (!node_stack.empty())
+                {
+                    current = node_stack.top();
+                    node_stack.pop();
+                    // current->lock();
+                    move_right(current, key);
+                }
+                else 
+                {
+                    current = nullptr;
+                }
                 // aux->unlock();
             }
         }
 
-        if (link_node)
-        {
-            Node *new_node = new Node();
-            NodeTuple<KeyType, DataType> *left = new NodeTuple<KeyType, DataType>(key);
-            NodeTuple<KeyType, DataType> *right = new NodeTuple<KeyType, DataType>(link_node->get_last_tuple()->value);
-            new_node->insert(left);
-            new_node->insert(right);
-            new_node->start->left_node = this->root;
-            new_node->start->next->left_node = link_node;
-            this->root = new_node;
-            // current->unlock();
-        }
+        Node *new_root_node = new Node();
+        NodeTuple<KeyType, DataType> *left = new NodeTuple<KeyType, DataType>(key);
+        NodeTuple<KeyType, DataType> *right = new NodeTuple<KeyType, DataType>(link_node->get_last_tuple()->value);
+        new_root_node->insert(left);
+        new_root_node->insert(right);
+        new_root_node->start->left_node = this->root;
+        new_root_node->start->next->left_node = link_node;
+        this->root = new_root_node;
+        // current->unlock();
     };
 
     void move_right(Node* current, KeyType key)
@@ -145,8 +140,9 @@ public:
         new_node->start = middle_tuple->next;
         middle_tuple->next = nullptr;
 
-        current_node->entries = MAX_ENTRIES / 2;
-        new_node->entries = MAX_ENTRIES - current_node->entries;
+        int entries = current_node->entries;
+        current_node->entries = entries / 2;
+        new_node->entries = entries - current_node->entries;
 
         return middle_tuple->value;   
     }
