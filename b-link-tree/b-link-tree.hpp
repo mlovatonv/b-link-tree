@@ -14,6 +14,20 @@ public:
         this->root = new Node(LEAF);
     };
 
+    DataType search(KeyType key)
+    {
+        Node *current = root;
+        while (!current->is_leaf) // find a candidate leaf
+        {
+            current = current->scan_node(key);
+        }
+        while (current && current->scan_node(key) == current->link_pointer)
+        {
+            current = current->link_pointer;
+        }
+        return current->get_data(key);
+    }
+
     void insert(KeyType key, DataType data) 
     {
         std::stack<Node*> node_stack;
