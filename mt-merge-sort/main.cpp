@@ -97,12 +97,7 @@ void MergeSort(int v[], int n,int THREADS=1){
             all_str[i].b = (i+1)*pivot-1;
             all_str[i].v=v;
             all_str[i].n=n-1;
-            /*
-            cout<<"i . "<<i<<endl;
-            cout<<" v "<<all_str[i].v<<endl;
-            cout<<" a "<<all_str[i].a<<endl;
-            cout<<" b "<<all_str[i].b<<endl;
-            */
+
         }
         all_str[i-2].b = n-1;
         //start of the threads
@@ -126,13 +121,7 @@ void MergeSort(int v[], int n,int THREADS=1){
             all_merge[i].b=all_str[2*i+1].b;
             all_merge[i].n=n-1;
             all_merge[i].middle=all_str[2*i+1].a;
-            /*
-            cout<<i<<endl;
-            cout<<" v "<<all_merge[i].v<<endl;
-            cout<<" a "<<all_merge[i].a<<endl;
-            cout<<" b "<<all_merge[i].b<<endl;
-            cout<<" m "<<all_merge[i].middle<<endl;
-            */
+
 
         }
         cout<<i;
@@ -156,21 +145,10 @@ void MergeSort(int v[], int n,int THREADS=1){
                 all_merge[y+i].b=all_merge[2*(y)+1].b;
                 all_merge[y+i].n=n-1;
                 all_merge[y+i].middle=all_merge[2*(y)+1].a;
-/*
-                cout<<"y: "<<y+i<<endl;
-                cout<<" v "<<all_merge[y+i].v<<endl;
-                cout<<" a "<<all_merge[y+i].a<<endl;
-                cout<<" b "<<all_merge[y+i].b<<endl;
-                cout<<" middle "<<all_merge[y+i].middle<<endl;
-                */
                 ++ite_aux;
             }
             for(int j=0;j<aux;++j){
-                /*
-                cout<<"a "<<all_merge[j+i].a<<endl;
-                cout<<"b "<<all_merge[j+i].b<<endl;
-                cout<<"middle "<<all_merge[j+i].middle<<endl;
-                */
+
                 pthread_create(&threads[j], NULL,merge_p,&all_merge[j+i]);
             }
             for(int j=0;j<aux;++j){
@@ -183,15 +161,27 @@ void MergeSort(int v[], int n,int THREADS=1){
 
 int main()
 {
-    int n, x, threads;
-    cin >> threads;
-    cin >> n;
-    int array[n];
-    for (int i = 0; i < n; ++i)
-    {
-        cin >> x;
-        array[i] = x;
-    } 
-    MergeSort(array, n, threads);
+    ofstream file;
+    file.open("MS_p.txt");
+    int THREADS;
+    for(THREADS=1;THREADS<6;THREADS*=2){
+        int n;
+        for(int i=10;i<10000000;i=10*i){
+            n=i;
+            int a[n];
+            srand(clock());
+            for(int i=0;i<n;++i){
+                a[i]= rand()%(n*10);
+            }
+            //print_array(a,n);
+            auto start = chrono::system_clock::now();
+            MergeSort(a,n,THREADS);
+            auto end = chrono::system_clock::now();
+            chrono::duration<float,milli>duration= end - start;
+            //print_array(a,n);
+            cout<<duration.count()<<"ms"<<endl;
+            file<<duration.count()<<endl;
+        }
+    }
     return 0;
 }
