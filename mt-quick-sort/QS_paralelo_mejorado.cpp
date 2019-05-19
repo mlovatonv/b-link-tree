@@ -124,45 +124,34 @@ void QuickSort(int v[], int n,int THREADS=1){
             pthread_join(threads[k2],NULL);
         }
     }
-    if(THREADS==8){
-        pthread_t threads[2];
-        int a=partition(v,0,n-1);
-        Str all_str[2];
-        Full_str(&all_str[0],0,a-1,v,n);
-        Full_str(&all_str[1],a+1,n-1,v,n);
-        all_str[0].part_v=4;
-        all_str[1].part_v=4;
-
-        for(int i=0;i<2;++i){
-            pthread_create(&threads[i], NULL,QuickSort_p,(void*)(&all_str[i]));
-        }
-        for(int k2=0;k2<2;++k2){
-            pthread_join(threads[k2],NULL);
-        }
-    }
-    if(THREADS==16)
-    {}
 
 }
 
 
 int main()
 {
-    int n=32;
-    int a[n];
-    int THREADS=4;
-    srand(clock());
-    for(int i=0;i<n;++i){
-        a[i]= rand()%(n*10);
+    ofstream file;
+    file.open("QS_p.txt");
+    int THREADS;
+    for(THREADS=1;THREADS<6;THREADS*=2){
+        int n;
+        for(int i=10;i<10000000;i=10*i){
+            n=i;
+            int a[n];
+            srand(clock());
+            for(int i=0;i<n;++i){
+                a[i]= rand()%(n*10);
+            }
+            //print_array(a,n);
+            auto start = chrono::system_clock::now();
+            QuickSort(a,n,THREADS);
+            auto end = chrono::system_clock::now();
+            chrono::duration<float,milli>duration= end - start;
+            //print_array(a,n);
+            cout<<duration.count()<<"ms"<<endl;
+            file<<duration.count()<<endl;
+        }
     }
-    print_array(a,n);
-    auto start = chrono::system_clock::now();
-    QuickSort(a,n,THREADS);
-    auto end = chrono::system_clock::now();
-    chrono::duration<float,milli>duration= end - start;
-    print_array(a,n);
-    cout<<duration.count()<<"ms"<<endl;
-
 
     return 0;
 }

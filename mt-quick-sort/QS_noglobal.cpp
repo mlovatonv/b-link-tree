@@ -6,36 +6,61 @@
 
 using namespace std;
 
-int THREADS=2;
 bool first=true;
 
 typedef struct
 {
-	int izq;
-	int der;
-	vector<int> *v;
+	int a;
+	int b;
+	int *v;
+	int n;
+	int part_v;
 
-}ALL;
+}Str;
 
-int partition(ALL *some){
-	vector<int> v;
-	v=(*(some->v));
-	int der=some->der;
-	int izq=some->izq;
-	int x=(*(some->v))[der];
-	int i=izq-1;
-	for(int j=izq;j<der;++j){
-		if((*(some->v))[j]<=x){
+void print_array(int v[],int n){
+	for(int i=0;i<n;++i){
+		cout<<v[i]<<" ";
+	}
+	cout<<endl;
+}
+
+void swap(int &a, int &b){
+	int aux=b;
+	b=a;
+	a=aux;
+}
+
+int partition(int v[], int a, int b){
+	int pivot=v[b];
+	int i=a-1;
+	int j=a;
+	for(;j<b;++j){
+		if(v[j] <= pivot){
 			++i;
-			int temp=(*(some->v))[i];
-			(*(some->v))[i]=(*(some->v))[j];
-			(*(some->v))[j]=temp;
+			swap(v[i],v[j]);
 		}
 	}
-	int temp2=(*(some->v))[i+1];
-	(*(some->v))[i+1]=(*(some->v))[der];
-	(*(some->v))[der]=temp2;
-	return(i+1);
+	swap(v[i+1],v[b]);
+	return i+1;
+}
+
+void* partition_p(void* all){
+	Str *some=(Str*)all;
+	int x=partition(some->v,some->a,some->b);
+	some->part_v=x;
+}
+
+void quick_sort(int v[], int a, int b){
+	if(b>a){
+		int already=partition(v,a,b);
+		quick_sort(v,a,already-1);
+		quick_sort(v,already,b);
+	}
+}
+void* quick_sort_p(void* all){
+	Str *some=(Str*)all;
+	quick_sort(some->v,some->a,some->b);
 }
 
 void* quick_sort_p_2C(void* some){
@@ -66,6 +91,13 @@ void* quick_sort_p_2C(void* some){
 			quick_sort_p_2C(&A1);
 			quick_sort_p_2C(&A2);
 		}
+	}
+}
+
+
+void QuickSort(int v[],int n,int THREADS=1){
+	if(THREADS==1){
+		quick_sort(v,0,n-1);
 	}
 }
 
@@ -101,27 +133,7 @@ int main(){
 
 		/*
 
-		time_t time;
-		cout<<"Vector size: "<<VECTOR_SIZE<<endl;
-		gettimeofday(&start,NULL);
-		long arr[3]={A,0,VECTOR_SIZE-1}
-		quick_sort_p_2C()
-		gettimeofday(&end,NULL);
-		long long  aux;
-		aux=((end.tv_sec)-(start.tv_sec))*1000000;
-		aux+=((end.tv_usec)-(start.tv_usec));
-		cout<<" Time quick_sort parallel: "<<(long double)aux/1000000.0;
-		cout<<endl;
-
-
-		gettimeofday(&start,NULL);
-		quick_sort(B,0,VECTOR_SIZE-1);
-		gettimeofday(&end,NULL);
-		aux=((end.tv_sec)-(start.tv_sec))*1000000;
-		aux+=((end.tv_usec)-(start.tv_usec));
-		cout<<" Time quick_sort : "<<(long double)aux/1000000.0;
-		cout<<endl;
-
+	
 */
 return 0;
 
