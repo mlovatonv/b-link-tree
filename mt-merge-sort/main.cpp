@@ -183,5 +183,6 @@ int main()
             file<<duration.count()<<endl;
         }
     }
+
     return 0;
 }
