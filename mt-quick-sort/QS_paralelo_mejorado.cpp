@@ -43,17 +43,20 @@ void swap(int &a, int &b)
 
 int partition(int v[], int a, int b)
 {
-    int pivot = v[b];
-    int i = a-1;
-    int j = a;
-    for(; j<b; ++j){
-        if(v[j] <= pivot){
-            ++i;
-            swap(v[i],v[j]);
+    if(b > a)
+    {
+        int pivot = v[b];
+        int i = a-1;
+        int j = a;
+        for(; j<b; ++j){
+            if(v[j] <= pivot){
+                ++i;
+                swap(v[i],v[j]);
+            }
         }
-    }
-    swap(v[i+1],v[b]);
+        swap(v[i+1],v[b]);
     return i+1;
+    }
 }
 
 void* partition_p(void* all)
@@ -76,11 +79,6 @@ void* quick_sort_p(void* all)
 {
     Str *some = (Str*)all;
     quick_sort(some->v, some->a, some->b);
-}
-void* QuickSort_p(void* all)
-{
-    Str* some = (Str*)all;
-    quick_sort(some->v, some->n, some->part_v);
 }
 
 void QuickSort(int v[], int n, int THREADS=1)
@@ -140,19 +138,82 @@ void QuickSort(int v[], int n, int THREADS=1)
             pthread_join(threads[k2], NULL);
         }
     }
+    if(THREADS == 8)
+    {
+        pthread_t threads[THREADS];
+        int all_values[THREADS-1];
+        int a = partition(v, 0, n-1);
+        Str str_f[8];
+        all_values[0] = a;
+
+        Full_str(&str_f[0], 0, a - 1, v, n - 1);
+        Full_str(&str_f[1], a + 1, n - 1, v, n - 1);
+
+        for(int i = 0; i < 2; ++i)
+        {
+            pthread_create(&threads[i], NULL, partition_p, (void*)(&str_f[i]));
+        }
+        for(int k2 = 0; k2 < 2; ++k2){
+            pthread_join(threads[k2], NULL);
+        }
+
+        all_values[1] = str_f[0].part_v;
+        all_values[2] = str_f[1].part_v;
+
+        Full_str(&str_f[2], 0, all_values[1] - 1, v, n - 1);
+        Full_str(&str_f[3], all_values[1] + 1, all_values[0] - 1, v, n - 1);
+        Full_str(&str_f[4], all_values[0] + 1, all_values[2] - 1, v, n - 1);
+        Full_str(&str_f[5], all_values[2] + 1, n - 1, v, n - 1);
+
+        for(int i = 0; i < 4; ++i)
+        {
+            pthread_create(&threads[i], NULL, partition_p, (void*)(&str_f[i+2]));
+        }
+        for(int k2 = 0; k2 < 4; ++k2)
+        {
+            pthread_join(threads[k2], NULL);
+        }
+        all_values[3] = str_f[2].part_v;
+        all_values[4] = str_f[3].part_v;
+        all_values[5] = str_f[4].part_v;
+        all_values[6] = str_f[5].part_v;
+
+        Full_str(&str_f[0], 0, all_values[3] - 1, v, n - 1);
+        Full_str(&str_f[1], all_values[3] + 1, all_values[1] - 1, v, n - 1);
+        Full_str(&str_f[2], all_values[1] + 1, all_values[4] - 1, v, n - 1);
+        Full_str(&str_f[3], all_values[4] + 1, all_values[0] - 1, v, n - 1);
+        Full_str(&str_f[4], all_values[0] + 1, all_values[5] - 1, v, n - 1);
+        Full_str(&str_f[5], all_values[5] + 1, all_values[2] - 1, v, n - 1);
+        Full_str(&str_f[6], all_values[2] + 1, all_values[6] - 1, v, n - 1);
+        Full_str(&str_f[7], all_values[6] + 1, n - 1, v, n - 1);
+
+        for(int i = 0; i < THREADS; ++i)
+        {
+            pthread_create(&threads[i], NULL, quick_sort_p, (void*)(&str_f[i]));
+        }
+        for(int k2 = 0; k2 < THREADS; ++k2)
+        {
+            pthread_join(threads[k2], NULL);
+        }
+
+    }
 
 }
 
 
 int main()
 {
-    ofstream file;
-    file.open("QS_p.txt");
+    ofstream times, size_p;
+    times.open("QuickSort_times.txt");
+    size_p.open("QuickSort_sizes.txt");
+
     int THREADS;
-    for( THREADS = 1; THREADS < 6; THREADS *= 2 )
+    
+    for( THREADS = 1; THREADS < 9; THREADS *= 2 )
     {
-        int n;
-        for( int i = 10; i < 10000000; i = 10*i)
+        //cout << "threads: " << THREADS << endl;
+        long n;
+        for( int i = 100; i < 1000000; i = 2 * i)
         {
             n = i;
             int a[n];
@@ -161,16 +222,20 @@ int main()
             {
                 a[i] = rand() % (n * 10);
             }
-            //print_array(a,n);
             auto start = chrono::system_clock::now();
             QuickSort(a, n, THREADS);
             auto end = chrono::system_clock::now();
             chrono::duration<float,milli> duration = end - start;
-            //print_array(a,n);
+            /*
+            cout << " n : " << n << " | ";
             cout << duration.count() << "ms" << endl;
-            file << duration.count() << endl;
+            */
+            times << duration.count() << endl;
+            size_p << n << endl;
         }
     }
+    times.close();
+    size_p.close();    
 
     return 0;
 }
