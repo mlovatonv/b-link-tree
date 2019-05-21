@@ -101,7 +101,8 @@ void MergeSort(int v[], int n, int THREADS = 1)
     {
         merge_sort( v, 0, n - 1);
     }
-    else{
+    else
+    {
         pthread_t threads[THREADS];
         Str all_str[THREADS];
         int pivot = n / THREADS;
@@ -136,7 +137,7 @@ void MergeSort(int v[], int n, int THREADS = 1)
         for(i = 0; i < aux; ++i)
         {
             all_merge[i].v = v;
-            all_merge[i].a = all_str[2*i].a;
+            all_merge[i].a = all_str[2 *i].a;
             all_merge[i].b = all_str[2*i + 1].b;
             all_merge[i].n = n - 1;
             all_merge[i].middle = all_str[2*i + 1].a;
@@ -185,13 +186,15 @@ void MergeSort(int v[], int n, int THREADS = 1)
 
 int main()
 {
-    ofstream file;
-    file.open("MS_p.txt");
+    ofstream file, size;
+    file.open("ms_time.txt");
+    size.open("ms_sizes.txt");
     int THREADS;
-    for (THREADS = 1; THREADS < 6; THREADS *= 2)
+    /*
+    for (THREADS = 1; THREADS < 9; THREADS *= 2)
     {
         int n;
-        for (int i = 10; i < 10000000; i = 10 * i)
+        for (int i = 100; i < 1000000; i = 2 * i)
         {
             n = i;
             int a[n];
@@ -208,8 +211,20 @@ int main()
             //print_array(a,n);
             cout << duration.count() << "ms" << endl;
             file << duration.count() << endl;
+            size << n << endl;
         }
     }
+    */
+    int n=100;
+    int a[n];
+    for (int i = 0; i < n; ++i)
+    {
+        a[i] = rand() % (n * 10);
+    }
+    print_array(a,n);
+    MergeSort(a,n,8);
+    cout << endl;
+    print_array(a,n);
 
     return 0;
 }
