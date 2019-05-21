@@ -58,5 +58,6 @@ int main()
         cin >> x;
         tree.insert(x, x);
     }
+    // tree.search(x, 1);
     return 0;
 }
