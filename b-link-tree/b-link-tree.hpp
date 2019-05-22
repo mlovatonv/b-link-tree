@@ -11,6 +11,12 @@ private:
     Node *root;
     int B;
 public:
+    BLinkTree()
+    {
+        this->root = new Node(LEAF);
+        this->B = 5;
+    };
+
     BLinkTree(int _B)
     {
         this->root = new Node(LEAF);
