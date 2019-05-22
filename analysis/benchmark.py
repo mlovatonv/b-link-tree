@@ -14,38 +14,41 @@ def benchmark_sort(program, input):
 def generate_input(max_value=10000):
     input_dict = {}
 
-    for i in range(1, max_value, 100):
+    for i in range(100, max_value, 100):
         input = [str(random.randint(1, max_value)) for _ in range(i)]
-        input_dict[i] = ' '.join(input).encode()
-    
+        input_dict[i] = str(i) + ' ' + ' '.join(input)
     return input_dict
 
 
 def main():
-    b_link_tree = {}
-    mt_insertion_sort = {}
-    mt_quick_sort = {}
+    five = {}
+    ten = {}
+    fifteen = {}
 
     input_dict = generate_input()
 
     print('Running simulation...')
 
+    # for input_size, input in input_dict.items():
+    #     five[input_size] = benchmark_sort(
+    #         '../b-link-tree/b-link-tree', ('5 ' + input).encode())
     for input_size, input in input_dict.items():
-        b_link_tree[input_size] = benchmark_sort(
-            '../b-link-tree/main.cpp', input)
-        mt_insertion_sort[input_size] = benchmark_sort(
-            '../mt-insertion-sort/main.cpp', input)
-        mt_quick_sort[input_size] = benchmark_sort(
-            '../mt_quick_sort', input)
+        ten[input_size] = benchmark_sort(
+            '../b-link-tree/b-link-tree', ('10 ' + input).encode())
+    # for input_size, input in input_dict.items():
+    #     fifteen[input_size] = benchmark_sort(
+    #         '../b-link-tree/b-link-tree', ('125 ' + input).encode())
 
-    plt.plot(b_link_tree.keys(), b_link_tree.values(), 
-             label="B-link-tree")
-    plt.plot(mt_insertion_sort.keys(), mt_insertion_sort.values(),
-             label="MT Insertion Sort")
-    plt.plot(mt_quick_sort.keys(), mt_quick_sort.values(),
-             label="MT Quicksort")
-    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, 
-               mode="expand", borderaxespad=0.)       
+    # plt.plot(five.keys(), five.values(),
+    #          label="b = 5")
+    plt.plot(ten.keys(), ten.values(),
+             label="b = 10")
+    # plt.plot(fifteen.keys(), fifteen.values(),
+    #          label="b = 125")
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2,
+               mode="expand", borderaxespad=0.)
+    plt.xlabel('n')
+    plt.ylabel('time (seconds)')
     plt.show()
 
 

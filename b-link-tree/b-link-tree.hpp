@@ -9,10 +9,18 @@ private:
     typedef NodeTuple<KeyType, DataType> NodeInNode;
 
     Node *root;
-public: 
+    int B;
+public:
     BLinkTree()
     {
         this->root = new Node(LEAF);
+        this->B = 5;
+    };
+
+    BLinkTree(int _B)
+    {
+        this->root = new Node(LEAF);
+        this->B = _B;
     };
 
     DataType search(KeyType key, DataType _default)
@@ -29,7 +37,7 @@ public:
         return current->get_data(key, _default);
     }
 
-    void insert(KeyType key, DataType data) 
+    void insert(KeyType key, DataType data)
     {
         std::stack<Node*> node_stack;
         Node *current = root;
@@ -44,7 +52,7 @@ public:
                 node_stack.push(aux);
             }
         }
- 
+
         move_right(current, key);
         if (current->get_tuple(key) != nullptr)
         {
@@ -54,7 +62,7 @@ public:
         // current->lock();
         while (current)
         {
-            if (current->entries < MAX_ENTRIES) // current is safe
+            if (current->entries < this->B) // current is safe
             {
                 if (!current->is_leaf)
                 {
@@ -62,7 +70,7 @@ public:
                 }
                 else
                 {
-                    current->insert_leaf(key, data);   
+                    current->insert_leaf(key, data);
                 }
                 // current->unlock();
                 return;
@@ -88,7 +96,7 @@ public:
                     // current->lock();
                     move_right(current, key);
                 }
-                else 
+                else
                 {
                     current = nullptr;
                 }
@@ -144,16 +152,16 @@ public:
         current_node->entries = entries / 2;
         new_node->entries = entries - current_node->entries;
 
-        return middle_tuple->value;   
+        return middle_tuple->value;
     }
-    
+
     void remove(KeyType key)
     {};
 
     void merge()
     {};
-    
-    void print() 
+
+    void print()
     {
         this->print(this->root);
     };

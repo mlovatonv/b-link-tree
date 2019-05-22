@@ -2,7 +2,6 @@
 #include <stack>
 
 #define LEAF true
-#define MAX_ENTRIES 5
 
 // pthread_mutex_t mutex1;
 // pthread_mutex_t mutex2;
