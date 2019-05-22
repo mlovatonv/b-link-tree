@@ -25,7 +25,7 @@ int main()
     // int THREADS=2;
     // pthread_mutex_init(&mutex1, NULL);
     // pthread_mutex_init(&mutex2, NULL);
-    
+
     // int n=5;
     // int all_keys[n]={1,2,3,4,5};
     // string all_data[n]={"a","b","c","d","e"};
@@ -50,14 +50,14 @@ int main()
     //     pthread_join(threads[i],NULL);
     // }
 
-    BLinkTree<int, int> tree;
-    int n, x, threads = 2;
+    int b, n, x, threads = 2;
+    cin >> b;
+    BLinkTree<int, int> tree(b);
     cin >> n;
     for (int i = 0; i < n; ++i)
     {
         cin >> x;
         tree.insert(x, x);
     }
-    // tree.search(x, 1);
     return 0;
 }

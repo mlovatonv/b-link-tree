@@ -11,37 +11,42 @@ def benchmark_sort(program, input):
     return (end - start).total_seconds()
 
 
-def generate_input(max_value=500000):
+def generate_input(max_value=10000):
     input_dict = {}
 
-    for i in range(10000, max_value, 10000):
+    for i in range(100, max_value, 100):
         input = [str(random.randint(1, max_value)) for _ in range(i)]
-        input_dict[i] = (str(i) + ' ' + ' '.join(input)).encode()
+        input_dict[i] = str(i) + ' ' + ' '.join(input)
     return input_dict
 
 
 def main():
-    only_insert = {}
-    insert_search = {}
+    five = {}
+    ten = {}
+    fifteen = {}
 
     input_dict = generate_input()
 
     print('Running simulation...')
 
+    # for input_size, input in input_dict.items():
+    #     five[input_size] = benchmark_sort(
+    #         '../b-link-tree/b-link-tree', ('5 ' + input).encode())
     for input_size, input in input_dict.items():
-        only_insert[input_size] = benchmark_sort(
-            '../b-link-tree/only_insert', input)
-    
-    for input_size, input in input_dict.items():
-        insert_search[input_size] = benchmark_sort(
-            '../b-link-tree/insert_search', input)
+        ten[input_size] = benchmark_sort(
+            '../b-link-tree/b-link-tree', ('10 ' + input).encode())
+    # for input_size, input in input_dict.items():
+    #     fifteen[input_size] = benchmark_sort(
+    #         '../b-link-tree/b-link-tree', ('125 ' + input).encode())
 
-    plt.plot(only_insert.keys(), only_insert.values(), 
-             label="Insert")   
-    plt.plot(insert_search.keys(), insert_search.values(), 
-             label="Insert and search")
+    # plt.plot(five.keys(), five.values(),
+    #          label="b = 5")
+    plt.plot(ten.keys(), ten.values(),
+             label="b = 10")
+    # plt.plot(fifteen.keys(), fifteen.values(),
+    #          label="b = 125")
     plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2,
-               mode="expand", borderaxespad=0.) 
+               mode="expand", borderaxespad=0.)
     plt.xlabel('n')
     plt.ylabel('time (seconds)')
     plt.show()
